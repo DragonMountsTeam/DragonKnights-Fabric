@@ -13,6 +13,7 @@ import net.minecraft.item.Wearable;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -32,18 +33,18 @@ public abstract class AbstractDragonHeadBlock extends BlockWithEntity implements
     public abstract float getYRotation(BlockState state);
 
     @SuppressWarnings("deprecation")
-    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
+    public boolean canPathfindThrough(BlockState state, BlockView level, BlockPos pos, NavigationType type) {
         return false;
     }
 
     @Override
-    public DragonHeadBlockEntity createBlockEntity(BlockView world) {
+    public DragonHeadBlockEntity createBlockEntity(BlockView level) {
         return new DragonHeadBlockEntity();
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, BlockView world, List<Text> tooltip, TooltipContext context) {
-        tooltip.add(this.variant.type.getName());
+    public void appendTooltip(ItemStack stack, @Nullable BlockView level, List<Text> tooltips, TooltipContext flag) {
+        tooltips.add(this.variant.type.getName());
     }
 
     @Override

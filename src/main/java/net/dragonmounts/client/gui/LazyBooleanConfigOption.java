@@ -1,6 +1,6 @@
 package net.dragonmounts.client.gui;
 
-import net.dragonmounts.util.config.BooleanConfig;
+import net.dragonmounts.config.BooleanEntry;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.OptionButtonWidget;
@@ -10,7 +10,7 @@ import net.minecraft.text.TranslatableText;
 
 import java.util.function.Function;
 
-public class LazyBooleanConfigOption extends AbstractLazyConfigOption<BooleanConfig> {
+public class LazyBooleanConfigOption extends AbstractLazyConfigOption<BooleanEntry> {
     public static final Function<LazyBooleanConfigOption, Text> DEFAULT_STRINGIFY =
             option -> ScreenTexts.composeToggleText(option.getDisplayPrefix(), option.get());
     public static final Function<LazyBooleanConfigOption, Text> TOGGLE_STRINGIFY =
@@ -20,7 +20,7 @@ public class LazyBooleanConfigOption extends AbstractLazyConfigOption<BooleanCon
 
     public LazyBooleanConfigOption(
             String caption,
-            BooleanConfig config,
+            BooleanEntry config,
             Function<LazyBooleanConfigOption, Text> stringify,
             Text tooltip
     ) {

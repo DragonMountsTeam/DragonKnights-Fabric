@@ -1,0 +1,12 @@
+accessWidener v2 named
+accessible class net/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleWidgetFactory
+accessible class net/minecraft/world/GameRules$Acceptor
+accessible class net/minecraft/recipe/Ingredient$Entry
+accessible field net/minecraft/entity/mob/MobEntity handItems Lnet/minecraft/util/collection/DefaultedList;
+accessible method net/minecraft/client/gui/screen/world/EditGameRulesScreen markInvalid (Lnet/minecraft/client/gui/screen/world/EditGameRulesScreen$AbstractRuleWidget;)V
+accessible method net/minecraft/client/gui/screen/world/EditGameRulesScreen markValid (Lnet/minecraft/client/gui/screen/world/EditGameRulesScreen$AbstractRuleWidget;)V
+accessible method net/minecraft/world/GameRules register (Ljava/lang/String;Lnet/minecraft/world/GameRules$Category;Lnet/minecraft/world/GameRules$Type;)Lnet/minecraft/world/GameRules$Key;
+accessible method net/minecraft/world/GameRules$BooleanRule create (Z)Lnet/minecraft/world/GameRules$Type;
+accessible method net/minecraft/world/GameRules$BooleanRule create (ZLjava/util/function/BiConsumer;)Lnet/minecraft/world/GameRules$Type;
+accessible method net/minecraft/world/GameRules$Type <init> (Ljava/util/function/Supplier;Ljava/util/function/Function;Ljava/util/function/BiConsumer;Lnet/minecraft/world/GameRules$Acceptor;)V
+accessible method net/minecraft/recipe/Ingredient ofEntries (Ljava/util/stream/Stream;)Lnet/minecraft/recipe/Ingredient;

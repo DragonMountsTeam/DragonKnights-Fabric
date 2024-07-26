@@ -28,18 +28,18 @@ public class StageCommand {
 
     public static int egg(ServerCommandSource source, Entity target) {
         if (target instanceof TameableDragonEntity) {
-            ServerWorld world = source.getWorld();
-            HatchableDragonEggEntity egg = new HatchableDragonEggEntity(world);
+            ServerWorld level = source.getWorld();
+            HatchableDragonEggEntity egg = new HatchableDragonEggEntity(level);
             TameableDragonEntity dragon = (TameableDragonEntity) target;
             dragon.inventory.dropContents(false, 1.25);
-            NbtCompound compound = dragon.writeNbt(new NbtCompound());
-            compound.remove(AGE_DATA_PARAMETER_KEY);
-            egg.readNbt(compound);
+            NbtCompound tag = dragon.writeNbt(new NbtCompound());
+            tag.remove(AGE_DATA_PARAMETER_KEY);
+            egg.readNbt(tag);
             egg.setDragonType(dragon.getDragonType(), false);
-            world.removeEntity(dragon);
-            world.spawnEntity(egg);
+            level.removeEntity(dragon);
+            level.spawnEntity(egg);
         } else if (target instanceof HatchableDragonEggEntity) {
-            ((HatchableDragonEggEntity) target).setAge(0);
+            ((HatchableDragonEggEntity) target).setAge(0, false);
         } else {
             source.sendError(createClassCastException(target, TameableDragonEntity.class));
             return 0;
@@ -62,13 +62,12 @@ public class StageCommand {
 
     public static int set(ServerCommandSource source, Entity target, DragonLifeStage stage) {
         if (target instanceof TameableDragonEntity) {
-            TameableDragonEntity dragon = (TameableDragonEntity) target;
-            dragon.setLifeStage(stage, true, true);
+            ((TameableDragonEntity) target).setLifeStage(stage, true, true);
         } else if (target instanceof HatchableDragonEggEntity) {
-            ServerWorld world = source.getWorld();
+            ServerWorld level = source.getWorld();
             ServerDragonEntity dragon = new ServerDragonEntity((HatchableDragonEggEntity) target, stage);
-            world.removeEntity(target);
-            world.spawnEntity(dragon);
+            level.removeEntity(target);
+            level.spawnEntity(dragon);
         } else {
             source.sendError(createClassCastException(target, TameableDragonEntity.class));
             return 0;

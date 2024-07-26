@@ -2,7 +2,6 @@ package net.dragonmounts.mixin;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
-import net.dragonmounts.DragonMountsConfig;
 import net.dragonmounts.init.DragonTypes;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -22,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static net.dragonmounts.block.HatchableDragonEggBlock.spawn;
+import static net.dragonmounts.init.DMGameRules.IS_EGG_OVERRIDDEN;
 
 @Mixin(AbstractBlock.AbstractBlockState.class)
 public abstract class AbstractBlockStateMixin extends State<Block, BlockState> {
@@ -34,7 +34,7 @@ public abstract class AbstractBlockStateMixin extends State<Block, BlockState> {
 
     @Inject(method = "onUse", at = @At("HEAD"), cancellable = true)
     public void tryHatchDragonEgg(World world, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> info) {
-        if (!world.isClient && this.getBlock() == Blocks.DRAGON_EGG && DragonMountsConfig.SERVER.block_override.get() && !world.getRegistryKey().equals(World.END))
+        if (!world.isClient && this.getBlock() == Blocks.DRAGON_EGG && !world.getRegistryKey().equals(World.END) && world.getGameRules().get(IS_EGG_OVERRIDDEN).get())
             info.setReturnValue(spawn(world, hit.getBlockPos(), DragonTypes.ENDER));
     }
 }

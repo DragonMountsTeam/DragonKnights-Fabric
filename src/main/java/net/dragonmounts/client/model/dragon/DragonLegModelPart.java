@@ -38,8 +38,8 @@ public abstract class DragonLegModelPart extends ModelPart {
             final int length = config.getThighLength(false);
             final int width = config.width;
             this.setPivot(-11, 18, 4);
-            this.setTextureOffset(112, 0);
-            this.addCuboid(config.defaultOffset, config.defaultOffset, config.defaultOffset, width, length, width);
+            this.setTextureOffset(112, 0)
+                    .addCuboid(config.defaultOffset, config.defaultOffset, config.defaultOffset, width, length, width);
 
         }
 
@@ -47,18 +47,18 @@ public abstract class DragonLegModelPart extends ModelPart {
         protected ModelPart createShank(Model model, DragonLegConfig config) {
             final int length = config.getShankLength(false);
             final ModelPart part = new ModelPart(model);
-            part.setTextureOffset(148, 0);
             part.setPivot(0, config.getThighLength(false) + config.defaultOffset, 0);
-            return part.addCuboid(config.shankOffset, config.shankOffset, config.shankOffset, config.shankWidth, length, config.shankWidth);
+            return part.setTextureOffset(148, 0)
+                    .addCuboid(config.shankOffset, config.shankOffset, config.shankOffset, config.shankWidth, length, config.shankWidth);
         }
 
         @Override
         protected ModelPart createFoot(Model model, DragonLegConfig config) {
             final int length = config.getFootLength(false);
             final ModelPart part = new ModelPart(model);
-            part.setTextureOffset(210, 0);
             part.setPivot(0, config.getShankLength(false) + config.shankOffset, 0);
-            return part.addCuboid(config.defaultOffset, config.footOffset, length * -0.75F, config.width, config.footHeight, length);
+            return part.setTextureOffset(210, 0)
+                    .addCuboid(config.defaultOffset, config.footOffset, length * -0.75F, config.width, config.footHeight, length);
         }
 
         @Override
@@ -66,8 +66,8 @@ public abstract class DragonLegModelPart extends ModelPart {
             final int length = config.getToeLength(false);
             final ModelPart part = new ModelPart(model);
             part.setPivot(0, 0, config.getFootLength(false) * -0.75F - config.footOffset / 2F);
-            part.setTextureOffset(176, 0);
-            return part.addCuboid(config.defaultOffset, config.footOffset, -length, config.width, config.footHeight, length);
+            return part.setTextureOffset(176, 0)
+                    .addCuboid(config.defaultOffset, config.footOffset, -length, config.width, config.footHeight, length);
         }
     }
 
@@ -81,26 +81,25 @@ public abstract class DragonLegModelPart extends ModelPart {
             final int length = config.getThighLength(true);
             final int width = config.width + 1;
             this.setPivot(-11, 13, 4);
-            this.setTextureOffset(112, 29);
-            this.addCuboid(config.defaultOffset, config.defaultOffset, config.defaultOffset, width, length, width);
+            this.setTextureOffset(112, 29)
+                    .addCuboid(config.defaultOffset, config.defaultOffset, config.defaultOffset, width, length, width);
         }
 
         @Override
         protected ModelPart createShank(Model model, DragonLegConfig config) {
             final int length = config.getShankLength(true);
             final ModelPart part = new ModelPart(model);
-            part.setTextureOffset(152, 29);
             part.setPivot(0, config.getThighLength(true) + config.defaultOffset, 0);
-            return part.addCuboid(config.shankOffset, config.shankOffset, config.shankOffset, config.shankWidth, length, config.shankWidth);
+            return part.setTextureOffset(152, 29).addCuboid(config.shankOffset, config.shankOffset, config.shankOffset, config.shankWidth, length, config.shankWidth);
         }
 
         @Override
         protected ModelPart createFoot(Model model, DragonLegConfig config) {
             final int length = config.getFootLength(true);
             final ModelPart part = new ModelPart(model);
-            part.setTextureOffset(180, 29);
+
             part.setPivot(0, config.getShankLength(true) + config.shankOffset, 0);
-            return part.addCuboid(config.defaultOffset, config.footOffset, length * -0.75F, config.width, config.footHeight, length);
+            return part.setTextureOffset(180, 29).addCuboid(config.defaultOffset, config.footOffset, length * -0.75F, config.width, config.footHeight, length);
         }
 
         @Override
@@ -108,8 +107,7 @@ public abstract class DragonLegModelPart extends ModelPart {
             final int length = config.getToeLength(true);
             final ModelPart part = new ModelPart(model);
             part.setPivot(0, 0, config.getFootLength(true) * -0.75F - config.footOffset / 2F);
-            part.setTextureOffset(215, 29);
-            return part.addCuboid(config.defaultOffset, config.footOffset, -length, config.width, config.footHeight, length);
+            return part.setTextureOffset(215, 29).addCuboid(config.defaultOffset, config.footOffset, -length, config.width, config.footHeight, length);
         }
     }
 }

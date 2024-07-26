@@ -15,7 +15,7 @@ import static net.dragonmounts.util.BlockEntityUtil.getInventory;
  * @see net.minecraft.screen.ShulkerBoxScreenHandler
  */
 public class DragonCoreScreenHandler extends ScreenHandler {
-    private final Inventory inventory;
+    public final Inventory inventory;
 
     public DragonCoreScreenHandler(int id, PlayerInventory playerInventory, PacketByteBuf data) {
         this(id, playerInventory, getInventory(playerInventory.player, data, 1));
@@ -25,34 +25,32 @@ public class DragonCoreScreenHandler extends ScreenHandler {
         super(DMScreenHandlers.DRAGON_CORE, id);
         (this.inventory = inventory).onOpen(playerInventory.player);
         this.addSlot(new LimitedSlot.Reject(inventory, 0, 80, 35));
-        for (int i = 0; i < 3; ++i)
-            for (int k = 0; k < 9; ++k)
+        for (int i = 0; i < 3; ++i) {
+            for (int k = 0; k < 9; ++k) {
                 this.addSlot(new Slot(playerInventory, k + i * 9 + 9, 8 + k * 18, 84 + i * 18));
-        for (int j = 0; j < 9; ++j)
+            }
+        }
+        for (int j = 0; j < 9; ++j) {
             this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 142));
+        }
     }
 
     @Override
     public ItemStack transferSlot(PlayerEntity player, int index) {
-        ItemStack result = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasStack()) {
-            ItemStack stack = slot.getStack();
-            result = stack.copy();
-            if (index == 0 && !this.insertItem(stack, 1, this.slots.size(), true)) {
-                return ItemStack.EMPTY;
-            } else if (index <= 27 && !this.insertItem(stack, 28, this.slots.size(), false)) {
-                return ItemStack.EMPTY;
-            } else if (!this.insertItem(stack, 1, 28, false)) {
-                return ItemStack.EMPTY;
-            }
-            if (stack.isEmpty()) {
+            ItemStack stack = slot.getStack(), copy = stack.copy();
+            if (index == 0 && !this.insertItem(stack, 1, this.slots.size(), true)) return ItemStack.EMPTY;
+            if (index <= 27 && !this.insertItem(stack, 28, this.slots.size(), false)) return ItemStack.EMPTY;
+            if (!this.insertItem(stack, 1, 28, false)) return ItemStack.EMPTY;
+            if (copy.isEmpty()) {
                 slot.setStack(ItemStack.EMPTY);
             } else {
                 slot.markDirty();
             }
+            return copy;
         }
-        return result;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -64,9 +62,5 @@ public class DragonCoreScreenHandler extends ScreenHandler {
     @Override
     public boolean canUse(PlayerEntity player) {
         return this.inventory.canPlayerUse(player);
-    }
-
-    public Inventory getContainer() {
-        return this.inventory;
     }
 }

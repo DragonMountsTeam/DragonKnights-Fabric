@@ -1,25 +1,24 @@
-package net.dragonmounts.util.config;
+package net.dragonmounts.config;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import net.dragonmounts.DragonMountsConfig;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.TranslatableText;
 
-public class BooleanConfig extends AbstractConfig {
+public class BooleanEntry extends ConfigEntry {
     public final boolean defaultValue;
     protected boolean backup;
     protected boolean value;
 
-    public BooleanConfig(String key, boolean init) {
+    public BooleanEntry(String key, boolean init) {
         super(key);
         this.defaultValue = this.value = this.backup = init;
     }
 
-    public BooleanConfig(String key, String display, boolean init) {
+    public BooleanEntry(String key, String display, boolean init) {
         super(key, display);
         this.defaultValue = this.value = this.backup = init;
     }
@@ -33,16 +32,17 @@ public class BooleanConfig extends AbstractConfig {
     }
 
     @Override
-    public void read(NbtCompound compound) {
-        if (compound.contains(this.key))
-            this.value = this.backup = compound.getBoolean(this.key);
+    public void read(NbtCompound tag) {
+        if (tag.contains(this.key)) {
+            this.value = this.backup = tag.getBoolean(this.key);
+        }
     }
 
     @Override
-    public void save(NbtCompound compound) {
+    public void save(NbtCompound tag) {
         if (this.backup ^ this.value) {
-            if (this.defaultValue ^ this.value) compound.putBoolean(this.key, this.backup = this.value);
-            else compound.remove(this.key);
+            if (this.defaultValue ^ this.value) tag.putBoolean(this.key, this.backup = this.value);
+            else tag.remove(this.key);
         }
     }
 
@@ -56,7 +56,7 @@ public class BooleanConfig extends AbstractConfig {
     protected int set(CommandContext<ServerCommandSource> context) {
         this.set(BoolArgumentType.getBool(context, "value"));
         context.getSource().sendFeedback(new TranslatableText("commands.dragonmounts.config.set", this.display, this.get()), true);
-        DragonMountsConfig.SERVER.save();
+        ServerConfig.INSTANCE.save();
         return 1;
     }
 

@@ -20,8 +20,11 @@ public class DragonWingModelPart extends ModelPart {
     protected void buildWing() {
         //setRenderScale(1.1F);
         this.setPivot(-10, 5, 4);
-        this.setTextureOffset(0, 152).addCuboid(-28, -3, -3, 28, 6, 6);
-        this.setTextureOffset(116, 232).addCuboid(-28, 0, 2, 28, 0, 24);
+        this
+                .setTextureOffset(0, 152)
+                .addCuboid(-28, -3, -3, 28, 6, 6)
+                .setTextureOffset(116, 232)
+                .addCuboid(-28, 0, 2, 28, 0, 24);
     }
 
     protected ModelPart createForearm(Model model) {

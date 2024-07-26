@@ -2,14 +2,22 @@ package net.dragonmounts.item;
 
 import net.dragonmounts.entity.dragon.TameableDragonEntity;
 import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.item.ToolMaterials;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+import java.util.Random;
 
 /**
  * @see net.minecraft.item.ToolItem
@@ -30,28 +38,31 @@ public class TieredShearsItem extends ShearsItem {
 
     @Override
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand) {
-        if (player.world.isClient) return super.useOnEntity(stack, player, entity, hand);
+        World level = entity.world;
+        if (level.isClient) return super.useOnEntity(stack, player, entity, hand);
         if (entity instanceof TameableDragonEntity) {
-            /*TameableDragonEntity dragon = (TameableDragonEntity) entity;
+            TameableDragonEntity dragon = (TameableDragonEntity) entity;
             BlockPos pos = dragon.getBlockPos();
             if (dragon.isShearable(stack, dragon.world, pos)) {
-                if (dragon.isOwnedBy(player)) {
+                if (dragon.isOwner(player)) {
                     Random random = dragon.getRandom();
                     boolean flag = false;
-                    for (ItemStack drop : dragon.onSheared(player, stack, dragon.level, pos, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack))) {
-                        ItemEntity item = entity.spawnAtLocation(drop, 1.0F);
+                    for (ItemStack drop : dragon.onSheared(player, stack, level, pos, EnchantmentHelper.getLevel(Enchantments.FORTUNE, stack))) {
+                        ItemEntity item = dragon.dropStack(drop, 1.0F);
                         if (item != null) {
                             flag = true;
-                            item.setDeltaMovement(item.getVelocity().add((random.nextFloat() - random.nextFloat()) * 0.1D, random.nextFloat() * 0.05D, (random.nextFloat() - random.nextFloat()) * 0.1D));
+                            item.setVelocity(item.getVelocity().add((random.nextFloat() - random.nextFloat()) * 0.1D, random.nextFloat() * 0.05D, (random.nextFloat() - random.nextFloat()) * 0.1D));
                         }
                     }
                     if (flag) {
-                        stack.hurtAndBreak(20, dragon, e -> e.broadcastBreakEvent(hand));
-                        return ActionResultType.SUCCESS;
+                        stack.damage(20, dragon, e -> e.sendToolBreakStatus(hand));
+                        return ActionResult.SUCCESS;
                     }
-                } else player.displayClientMessage(new TranslatableText("message.dragonmounts.not_owner"), true);
-                return ActionResultType.FAIL;
-            }*/
+                } else {
+                    player.sendMessage(new TranslatableText("message.dragonmounts.not_owner"), true);
+                }
+                return ActionResult.FAIL;
+            }
             return ActionResult.PASS;
         }
         return super.useOnEntity(stack, player, entity, hand);

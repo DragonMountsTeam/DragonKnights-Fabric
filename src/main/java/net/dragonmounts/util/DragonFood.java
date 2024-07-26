@@ -6,6 +6,7 @@ import net.dragonmounts.entity.dragon.DragonLifeStage;
 import net.dragonmounts.entity.dragon.TameableDragonEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
 
 import static net.dragonmounts.util.EntityUtil.consume;
@@ -16,8 +17,11 @@ public class DragonFood implements IDragonFood {
     public static final DragonFood COOKED_MEAT = new DragonFood(2500, 3);
 
     public static final IDragonFood HONEY_BOTTLE = (dragon, player, stack, hand) -> {
+        boolean isOwner = dragon.isOwner(player);
         if (dragon.isAgeLocked()) {
-            dragon.setAgeLocked(false);
+            if (isOwner) {
+                dragon.setAgeLocked(false);
+            }
         } else {
             dragon.growUp(100, true);
         }
@@ -25,7 +29,7 @@ public class DragonFood implements IDragonFood {
         if (!player.abilities.creativeMode) {
             consume(player, hand, stack, new ItemStack(Items.GLASS_BOTTLE));
         }
-        if (dragon.isOwner(player)) {
+        if (isOwner) {
             if (dragon.getLifeStage() == DragonLifeStage.ADULT && dragon.canEat()) {
                 dragon.lovePlayer(player);
             }
@@ -80,10 +84,8 @@ public class DragonFood implements IDragonFood {
         REGISTRY.put(item, food);
     }
 
-    public static IDragonFood get(Item item, IDragonFood defaultValue) {
-        if (item instanceof IDragonFood) return (IDragonFood) item;
-        if (REGISTRY.containsKey(item)) return REGISTRY.get(item);
-        return defaultValue;
+    public static IDragonFood get(Item item) {
+        return item instanceof IDragonFood ? (IDragonFood) item : REGISTRY.getOrDefault(item, UNKNOWN);
     }
 
     public static boolean test(Item item) {
@@ -112,6 +114,7 @@ public class DragonFood implements IDragonFood {
             }
             consume(player, hand, stack, result == null ? null : new ItemStack(result));
         }
+        player.incrementStat(Stats.USED.getOrCreateStat(item));
         if (dragon.isOwner(player)) {
             if (dragon.getLifeStage() == DragonLifeStage.ADULT && dragon.canEat()) {
                 dragon.lovePlayer(player);

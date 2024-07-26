@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "AbstractBlockStateMixin",
+    "ItemEntityMixin",
     "ItemPredicateMixin",
     "LivingEntityMixin",
     "MatchToolLootConditionSerializerMixin",
@@ -18,10 +19,8 @@
     "ChatScreenMixin",
     "ClientPlayerInteractionManagerMixin",
     "ClientPlayNetworkHandlerMixin",
-    "CreativeInventoryScreenMixin",
     "HeadFeatureRendererMixin",
-    "ItemRendererMixin",
-    "ScreenMixin"
+    "ItemRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -26,12 +26,5 @@
     "fabricloader": ">=0.14.17",
     "fabric": "*",
     "minecraft": "1.16.5"
-  },
-  "custom": {
-    "loom:injected_interfaces": {
-      "net/minecraft/": [
-        "net/fabricmc/example/BucketEmptySoundGetter"
-      ]
-    }
   }
 }

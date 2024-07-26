@@ -32,6 +32,7 @@ import net.minecraft.world.MobSpawnerEntry;
 import net.minecraft.world.MobSpawnerLogic;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
@@ -40,7 +41,7 @@ import static net.dragonmounts.DragonMounts.ITEM_TRANSLATION_KEY_PREFIX;
 
 public final class DragonSpawnEggItem extends SpawnEggItem implements IDragonTypified {
     private static final String TRANSLATION_KEY = ITEM_TRANSLATION_KEY_PREFIX + "dragon_spawn_egg";
-    private final DragonType type;
+    public final DragonType type;
 
     public DragonSpawnEggItem(DragonType type, int background, int highlight, Settings settings) {
         super(DMEntities.TAMEABLE_DRAGON, background, highlight, settings);
@@ -101,14 +102,15 @@ public final class DragonSpawnEggItem extends SpawnEggItem implements IDragonTyp
                 }
                 player.incrementStat(Stats.USED.getOrCreateStat(this));
                 return TypedActionResult.consume(stack);
-            } else return TypedActionResult.fail(stack);
+            }
+            return TypedActionResult.fail(stack);
         }
         return TypedActionResult.success(stack);
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext flag) {
-        tooltip.add(this.type.getName());
+    public void appendTooltip(ItemStack stack, @Nullable World level, List<Text> tooltips, TooltipContext flag) {
+        tooltips.add(this.type.getName());
     }
 
     @Override

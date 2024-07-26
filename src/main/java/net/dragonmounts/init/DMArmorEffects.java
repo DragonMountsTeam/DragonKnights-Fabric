@@ -3,6 +3,7 @@ package net.dragonmounts.init;
 import net.dragonmounts.api.IDragonScaleArmorEffect;
 import net.dragonmounts.capability.ArmorEffectManager;
 import net.dragonmounts.capability.IArmorEffectManager;
+import net.dragonmounts.util.TextBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
@@ -14,7 +15,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.tag.FluidTags;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -24,6 +24,7 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Random;
@@ -47,6 +48,7 @@ public class DMArmorEffects {
         }
     };
 
+    private static final TextBlock ENCHANT_TOOLTIP = new TextBlock(new TranslatableText("tooltip.armor_effect.dragonmounts.enchant"));
     public static final IDragonScaleArmorEffect ENCHANT = new IDragonScaleArmorEffect() {
         @Override
         public boolean activate(IArmorEffectManager manager, PlayerEntity player, int level) {
@@ -75,8 +77,8 @@ public class DMArmorEffects {
         }
 
         @Override
-        public void appendHoverText(ItemStack stack, World world, List<Text> components) {
-            components.add(new TranslatableText("tooltip.armor_effect.dragonmounts.enchant"));
+        public void appendHoverText(ItemStack stack, @Nullable World level, List<Text> tooltips) {
+            ENCHANT_TOOLTIP.appendHoverText(tooltips);
         }
     };
 
@@ -139,16 +141,17 @@ public class DMArmorEffects {
         }
 
         @Override
-        public void appendHoverText(ItemStack stack, World world, List<Text> components) {
-            components.add(LiteralText.EMPTY);
-            this.appendTriggerInfo(stack, world, components);
-            components.add(new TranslatableText(FISHING_LUCK));
-            this.appendCooldownInfo(stack, world, components);
+        protected TextBlock init() {
+            return new TextBlock(
+                    new TranslatableText(this.description),
+                    new TranslatableText(FISHING_LUCK)
+            );
         }
     };
 
     public static final IDragonScaleArmorEffect.Advanced ICE = new IDragonScaleArmorEffect.Advanced(new Identifier(MOD_ID, "ice"), 1200);
 
+    private static final TextBlock MOONLIGHT_TOOLTIP = new TextBlock(new TranslatableText("tooltip.armor_effect.dragonmounts.moonlight"));
     public static final IDragonScaleArmorEffect MOONLIGHT = new IDragonScaleArmorEffect() {
         @Override
         public boolean activate(IArmorEffectManager manager, PlayerEntity player, int level) {
@@ -160,8 +163,8 @@ public class DMArmorEffects {
         }
 
         @Override
-        public void appendHoverText(ItemStack stack, World world, List<Text> components) {
-            components.add(new TranslatableText("tooltip.armor_effect.dragonmounts.moonlight"));
+        public void appendHoverText(ItemStack stack, @Nullable World level, List<Text> tooltips) {
+            MOONLIGHT_TOOLTIP.appendHoverText(tooltips);
         }
     };
 
@@ -185,14 +188,14 @@ public class DMArmorEffects {
         }
 
         @Override
-        public void appendHoverText(ItemStack stack, World world, List<Text> components) {
-            components.add(LiteralText.EMPTY);
-            this.appendTriggerInfo(stack, world, components);
-            components.add(new TranslatableText(FISHING_LUCK));
-            this.appendCooldownInfo(stack, world, components);
+        protected TextBlock init() {
+            return new TextBlock(
+                    new TranslatableText(this.description),
+                    new TranslatableText(FISHING_LUCK)
+            );
         }
     };
-
+    private static final TextBlock TERRA_TOOLTIP = new TextBlock(new TranslatableText("tooltip.armor_effect.dragonmounts.terra"));
     public static final IDragonScaleArmorEffect TERRA = new IDragonScaleArmorEffect() {
         @Override
         public boolean activate(IArmorEffectManager manager, PlayerEntity player, int level) {
@@ -204,11 +207,11 @@ public class DMArmorEffects {
         }
 
         @Override
-        public void appendHoverText(ItemStack stack, World world, List<Text> components) {
-            components.add(new TranslatableText("tooltip.armor_effect.dragonmounts.terra"));
+        public void appendHoverText(ItemStack stack, @Nullable World level, List<Text> tooltips) {
+            TERRA_TOOLTIP.appendHoverText(tooltips);
         }
     };
-
+    private static final TextBlock WATER_TOOLTIP = new TextBlock(new TranslatableText("tooltip.armor_effect.dragonmounts.water"));
     public static final IDragonScaleArmorEffect WATER = new IDragonScaleArmorEffect() {
         @Override
         public boolean activate(IArmorEffectManager manager, PlayerEntity player, int level) {
@@ -220,8 +223,8 @@ public class DMArmorEffects {
         }
 
         @Override
-        public void appendHoverText(ItemStack stack, World world, List<Text> components) {
-            components.add(new TranslatableText("tooltip.armor_effect.dragonmounts.water"));
+        public void appendHoverText(ItemStack stack, @Nullable World level, List<Text> tooltips) {
+            WATER_TOOLTIP.appendHoverText(tooltips);
         }
     };
 

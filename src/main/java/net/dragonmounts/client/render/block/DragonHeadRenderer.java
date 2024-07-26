@@ -5,6 +5,7 @@ import net.dragonmounts.block.entity.DragonHeadBlockEntity;
 import net.dragonmounts.client.model.dragon.DragonHeadModel;
 import net.dragonmounts.client.variant.VariantAppearance;
 import net.dragonmounts.item.DragonHeadItem;
+import net.dragonmounts.registry.DragonVariant;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -26,9 +27,9 @@ public class DragonHeadRenderer extends BlockEntityRenderer<DragonHeadBlockEntit
         final Item item = stack.getItem();
         if (item instanceof DragonHeadItem) {
             if (mode == Mode.HEAD) {
-                renderHead(((DragonHeadItem) item).variant.getAppearance(ENDER_FEMALE), 0.5D, 0.4375D, 0.5D, 180F, 180F, 1.425F, true, matrices, provider, light, overlay);
+                renderHead(((DragonHeadItem) item).variant, 0.5D, 0.4375D, 0.5D, 180F, 180F, 1.425F, true, matrices, provider, light, overlay);
             } else {
-                renderHead(((DragonHeadItem) item).variant.getAppearance(ENDER_FEMALE), 0.5D, 0D, 0.5D, 180F, 0F, 0.75F, true, matrices, provider, light, overlay);
+                renderHead(((DragonHeadItem) item).variant, 0.5D, 0D, 0.5D, 180F, 0F, 0.75F, true, matrices, provider, light, overlay);
             }
         }
     };
@@ -46,7 +47,7 @@ public class DragonHeadRenderer extends BlockEntityRenderer<DragonHeadBlockEntit
             if (head.isOnWall) {
                 final Direction direction = state.get(HORIZONTAL_FACING);
                 renderHead(
-                        head.variant.getAppearance(ENDER_FEMALE),
+                        head.variant,
                         0.5D - direction.getOffsetX() * 0.25D,
                         0.25D,
                         0.5D - direction.getOffsetZ() * 0.25D,
@@ -61,7 +62,7 @@ public class DragonHeadRenderer extends BlockEntityRenderer<DragonHeadBlockEntit
                 );
             } else {
                 renderHead(
-                        head.variant.getAppearance(ENDER_FEMALE),
+                        head.variant,
                         0.5D,
                         0D,
                         0.5D,
@@ -78,15 +79,17 @@ public class DragonHeadRenderer extends BlockEntityRenderer<DragonHeadBlockEntit
         }
     }
 
-    public static void renderHead(VariantAppearance appearance, double offsetX, double offsetY, double offsetZ, float ticks, float yaw, float scale, boolean flip, MatrixStack matrices, VertexConsumerProvider provider, int light, int overlay) {
+    public static void renderHead(DragonVariant variant, double offsetX, double offsetY, double offsetZ, float ticks, float yaw, float scale, boolean flip, MatrixStack matrices, VertexConsumerProvider provider, int light, int overlay) {
+        VariantAppearance appearance = variant.getAppearance(ENDER_FEMALE);
+        DragonHeadModel model = DRAGON_HEAD_MODEL;
         matrices.push();
         matrices.translate(offsetX, offsetY, offsetZ);
         if (flip) {
             matrices.scale(1.0F, -1.0F, -1.0F);
         }
-        DRAGON_HEAD_MODEL.setupAnim(ticks, yaw, 0F, scale);
-        DRAGON_HEAD_MODEL.render(matrices, provider.getBuffer(appearance.getBodyForBlock()), light, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
-        DRAGON_HEAD_MODEL.render(matrices, provider.getBuffer(appearance.getGlowForBlock()), 15728640, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
+        model.setupAnim(ticks, yaw, 0F, scale);
+        model.render(matrices, provider.getBuffer(appearance.getBodyForBlock()), light, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
+        model.render(matrices, provider.getBuffer(appearance.getGlowForBlock()), 15728640, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
         matrices.pop();
     }
 }

@@ -1,6 +1,6 @@
 package net.dragonmounts.client.gui;
 
-import net.dragonmounts.util.config.DoubleConfig;
+import net.dragonmounts.config.DoubleEntry;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.text.LiteralText;
@@ -9,7 +9,7 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.function.Function;
 
-public class LazySliderConfigOption extends AbstractLazyConfigOption<DoubleConfig> {
+public class LazySliderConfigOption extends AbstractLazyConfigOption<DoubleEntry> {
     public static final Function<LazySliderConfigOption, Text> STRINGIFY_X_2F = button -> button.getGenericLabel(new LiteralText(String.format("%.2f", button.value)));
     public final Function<LazySliderConfigOption, Text> stringify;
     public final double minValue;
@@ -20,7 +20,7 @@ public class LazySliderConfigOption extends AbstractLazyConfigOption<DoubleConfi
 
     public LazySliderConfigOption(
             String caption,
-            DoubleConfig config,
+            DoubleEntry config,
             double minValue,
             double maxValue,
             double steps,

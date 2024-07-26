@@ -6,8 +6,6 @@ import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class DragonNeckModelPart extends ScaledModelPart {
     public static final int NECK_SIZE = 10;
@@ -15,7 +13,6 @@ public class DragonNeckModelPart extends ScaledModelPart {
     public static final float NECK_SEGMENT_COUNT_FLOAT = 7F;
     protected final Segment[] segments = new Segment[NECK_SEGMENT_COUNT_INT];
     public final ModelPart scale;
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public DragonNeckModelPart(Model model) {
         super(model);

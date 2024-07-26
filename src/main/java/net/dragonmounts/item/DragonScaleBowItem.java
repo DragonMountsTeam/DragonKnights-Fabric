@@ -8,6 +8,7 @@ import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -15,19 +16,11 @@ import static net.dragonmounts.DragonMounts.ITEM_TRANSLATION_KEY_PREFIX;
 
 public class DragonScaleBowItem extends BowItem implements IDragonTypified {
     private static final String TRANSLATION_KEY = ITEM_TRANSLATION_KEY_PREFIX + "dragon_scale_bow";
-
-    protected DragonType type;
-
-    protected final DragonScaleTier tier;
+    public final DragonScaleTier tier;
 
     public DragonScaleBowItem(DragonScaleTier tier, Settings settings) {
-        super(settings.maxDamageIfAbsent((int) (tier.getDurability() * 0.25)));
+        super(settings.maxDamageIfAbsent(tier.getDurability() >> 1));
         this.tier = tier;
-        this.type = tier.getDragonType();
-    }
-
-    public DragonScaleTier getTier() {
-        return this.tier;
     }
 
     @Override
@@ -37,12 +30,12 @@ public class DragonScaleBowItem extends BowItem implements IDragonTypified {
 
     @Override
     public boolean canRepair(ItemStack toRepair, ItemStack repair) {
-        return this.tier.getRepairIngredient().test(repair);
+        return this.tier.repairIngredient.test(repair);
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        tooltip.add(this.type.getName());
+    public void appendTooltip(ItemStack stack, @Nullable World level, List<Text> tooltips, TooltipContext flag) {
+        tooltips.add(this.tier.type.getName());
     }
 
     @Override
@@ -52,6 +45,6 @@ public class DragonScaleBowItem extends BowItem implements IDragonTypified {
 
     @Override
     public DragonType getDragonType() {
-        return this.type;
+        return this.tier.type;
     }
 }

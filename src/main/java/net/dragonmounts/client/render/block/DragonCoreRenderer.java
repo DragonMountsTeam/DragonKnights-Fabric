@@ -22,8 +22,23 @@ import static net.minecraft.state.property.Properties.HORIZONTAL_FACING;
 public class DragonCoreRenderer extends BlockEntityRenderer<DragonCoreBlockEntity> {
     private static final Identifier TEXTURE_LOCATION = new Identifier(MOD_ID, "textures/blocks/dragon_core.png");
     private static final RenderLayer RENDER_LAYER = RenderLayer.getEntityCutoutNoCull(TEXTURE_LOCATION);
-    private static final ShulkerEntityModel<?> ITEM_STACK_MODEL = new ShulkerEntityModel<>();
-    public static final BuiltinItemRendererRegistry.DynamicItemRenderer ITEM_RENDERER = (stack, mode, matrices, vertex, light, overlay) -> render(Direction.SOUTH, ITEM_STACK_MODEL, 0.0F, matrices, vertex, light, overlay);
+    public static final BuiltinItemRendererRegistry.DynamicItemRenderer ITEM_RENDERER;
+
+    static {
+        ShulkerEntityModel<?> model = new ShulkerEntityModel<>();
+        ITEM_RENDERER = (stack, mode, matrices, vertex, light, overlay) -> DragonCoreRenderer.render(Direction.SOUTH, model, 0.0F, matrices, vertex, light, overlay);
+    }
+
+    private final ShulkerEntityModel<?> model = new ShulkerEntityModel<>();
+
+    public DragonCoreRenderer(BlockEntityRenderDispatcher dispatcher) {
+        super(dispatcher);
+    }
+
+    @Override
+    public void render(DragonCoreBlockEntity core, float ticks, MatrixStack matrices, VertexConsumerProvider vertex, int light, int overlay) {
+        render(core.getCachedState().get(HORIZONTAL_FACING), this.model, core.getProgress(ticks), matrices, vertex, light, overlay);
+    }
 
     public static void render(Direction direction, ShulkerEntityModel<?> model, float progress, MatrixStack matrices, VertexConsumerProvider vertex, int light, int overlay) {
         VertexConsumer buffer = vertex.getBuffer(RENDER_LAYER);
@@ -38,16 +53,5 @@ public class DragonCoreRenderer extends BlockEntityRenderer<DragonCoreBlockEntit
         matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(270.0F * progress));
         model.getTopShell().render(matrices, buffer, light, overlay);
         matrices.pop();
-    }
-
-    private final ShulkerEntityModel<?> model = new ShulkerEntityModel<>();
-
-    public DragonCoreRenderer(BlockEntityRenderDispatcher dispatcher) {
-        super(dispatcher);
-    }
-
-    @Override
-    public void render(DragonCoreBlockEntity entity, float ticks, MatrixStack matrices, VertexConsumerProvider vertex, int light, int overlay) {
-        render(entity.getCachedState().get(HORIZONTAL_FACING), this.model, entity.getProgress(ticks), matrices, vertex, light, overlay);
     }
 }

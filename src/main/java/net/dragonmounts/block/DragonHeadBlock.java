@@ -31,13 +31,13 @@ public class DragonHeadBlock extends AbstractDragonHeadBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView level, BlockPos pos, ShapeContext context) {
         return SHAPE;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public VoxelShape getCullingShape(BlockState state, BlockView world, BlockPos pos) {
+    public VoxelShape getCullingShape(BlockState state, BlockView level, BlockPos pos) {
         return VoxelShapes.empty();
     }
 

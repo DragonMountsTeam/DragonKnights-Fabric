@@ -18,13 +18,18 @@ public class DragonBodyModelPart extends ModelPart {
 
     protected void buildBody() {
         this.setPivot(0, 4, 8);
-        //body
-        this.setTextureOffset(0, 0).addCuboid(-12, 0, -16, 24, 24, 64);
-        //scale
-        this.setTextureOffset(0, 32).addCuboid(-1, -6, 10, 2, 6, 12);
-        this.setTextureOffset(0, 32).addCuboid(-1, -6, 30, 2, 6, 12);
-        //heart
-        this.setTextureOffset(130, 110).addCuboid(-4, 12, -5, 8, 6, 15);
+        this
+                //body
+                .setTextureOffset(0, 0)
+                .addCuboid(-12, 0, -16, 24, 24, 64)
+                //scale
+                .setTextureOffset(0, 32)
+                .addCuboid(-1, -6, 10, 2, 6, 12)
+                .setTextureOffset(0, 32)
+                .addCuboid(-1, -6, 30, 2, 6, 12)
+                //heart
+                .setTextureOffset(130, 110)
+                .addCuboid(-4, 12, -5, 8, 6, 15);
     }
 
     protected ModelPart createBack(Model model) {
@@ -35,8 +40,10 @@ public class DragonBodyModelPart extends ModelPart {
 
     protected ModelPart createChest(Model model) {
         return new ModelPart(model)
-                .setTextureOffset(192, 132).addCuboid(12, 0, 21, 4, 12, 12)
-                .setTextureOffset(224, 132).addCuboid(-16, 0, 21, 4, 12, 12);
+                .setTextureOffset(192, 132)
+                .addCuboid(12, 0, 21, 4, 12, 12)
+                .setTextureOffset(224, 132)
+                .addCuboid(-16, 0, 21, 4, 12, 12);
     }
 
     protected ModelPart createSaddle(Model model) {

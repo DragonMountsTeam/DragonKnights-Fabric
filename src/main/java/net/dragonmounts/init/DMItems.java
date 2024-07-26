@@ -7,6 +7,7 @@ import net.dragonmounts.api.DragonScaleTier;
 import net.dragonmounts.api.IDragonScaleArmorEffect;
 import net.dragonmounts.item.*;
 import net.dragonmounts.registry.DragonType;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item.Settings;
 import net.minecraft.item.ToolMaterial;
@@ -17,11 +18,11 @@ import net.minecraft.util.registry.Registry;
 import java.util.function.Function;
 
 import static net.dragonmounts.DragonMounts.MOD_ID;
+import static net.dragonmounts.DragonMounts.makeId;
 import static net.dragonmounts.api.DragonScaleArmorSuit.DRAGONMOUNTS_TOOL_TAB;
 import static net.dragonmounts.init.DMItemGroups.*;
 
 public class DMItems {
-
     public static final DragonScalesItem AETHER_DRAGON_SCALES = createDragonScales("aether_dragon_scales", DragonTypes.AETHER, item());
     public static final DragonScalesItem ENCHANT_DRAGON_SCALES = createDragonScales("enchant_dragon_scales", DragonTypes.ENCHANT, item());
     public static final DragonScalesItem ENDER_DRAGON_SCALES = createDragonScales("ender_dragon_scales", DragonTypes.ENDER, item());
@@ -302,52 +303,101 @@ public class DMItems {
     public static final DragonSpawnEggItem WATER_DRAGON_SPAWN_EGG = createDragonSpawnEgg("water_dragon_spawn_egg", DragonTypes.WATER, 0x546FAD, 0x2B427E, item());
     public static final DragonSpawnEggItem WITHER_DRAGON_SPAWN_EGG = createDragonSpawnEgg("wither_dragon_spawn_egg", DragonTypes.WITHER, 0x8A9999, 0x474F51, item());
     public static final DragonSpawnEggItem ZOMBIE_DRAGON_SPAWN_EGG = createDragonSpawnEgg("zombie_dragon_spawn_egg", DragonTypes.ZOMBIE, 0x66664B, 0xB6D035, item());
-
+    //?
+    public static final VariantSwitcherItem VARIANT_SWITCHER = Registry.register(Registry.ITEM, makeId("variant_switcher"), new VariantSwitcherItem(item()));
     //Shears
     public static final TieredShearsItem DIAMOND_SHEARS = createTieredShears("diamond_shears", ToolMaterials.DIAMOND, item());
     public static final TieredShearsItem NETHERITE_SHEARS = createTieredShears("netherite_shears", ToolMaterials.NETHERITE, item().fireproof());
-    private static DragonArmorItem createDragonArmor(String name, String texture, int protection, Settings settings) {
-        return Registry.register(Registry.ITEM, new Identifier(MOD_ID, name), new DragonArmorItem(new Identifier(DragonMounts.MOD_ID, texture), protection, settings));
+    //Dragon Amulets
+    public static final AmuletItem<Entity> AMULET = Registry.register(Registry.ITEM, makeId("amulet"), new AmuletItem<>(item()));
+    public static final DragonAmuletItem FOREST_DRAGON_AMULET = createDragonAmulet("forest_dragon_amulet", DragonTypes.FOREST, none());
+    public static final DragonAmuletItem FIRE_DRAGON_AMULET = createDragonAmulet("fire_dragon_amulet", DragonTypes.FIRE, none());
+    public static final DragonAmuletItem ICE_DRAGON_AMULET = createDragonAmulet("ice_dragon_amulet", DragonTypes.ICE, none());
+    public static final DragonAmuletItem WATER_DRAGON_AMULET = createDragonAmulet("water_dragon_amulet", DragonTypes.WATER, none());
+    public static final DragonAmuletItem AETHER_DRAGON_AMULET = createDragonAmulet("aether_dragon_amulet", DragonTypes.AETHER, none());
+    public static final DragonAmuletItem NETHER_DRAGON_AMULET = createDragonAmulet("nether_dragon_amulet", DragonTypes.NETHER, none());
+    public static final DragonAmuletItem ENDER_DRAGON_AMULET = createDragonAmulet("ender_dragon_amulet", DragonTypes.ENDER, none());
+    public static final DragonAmuletItem SUNLIGHT_DRAGON_AMULET = createDragonAmulet("sunlight_dragon_amulet", DragonTypes.SUNLIGHT, none());
+    public static final DragonAmuletItem ENCHANT_DRAGON_AMULET = createDragonAmulet("enchant_dragon_amulet", DragonTypes.ENCHANT, none());
+    public static final DragonAmuletItem STORM_DRAGON_AMULET = createDragonAmulet("storm_dragon_amulet", DragonTypes.STORM, none());
+    public static final DragonAmuletItem TERRA_DRAGON_AMULET = createDragonAmulet("terra_dragon_amulet", DragonTypes.TERRA, none());
+    public static final DragonAmuletItem ZOMBIE_DRAGON_AMULET = createDragonAmulet("zombie_dragon_amulet", DragonTypes.ZOMBIE, none());
+    public static final DragonAmuletItem MOONLIGHT_DRAGON_AMULET = createDragonAmulet("moonlight_dragon_amulet", DragonTypes.MOONLIGHT, none());
+    public static final DragonAmuletItem SCULK_DRAGON_AMULET = createDragonAmulet("sculk_dragon_amulet", DragonTypes.SCULK, none().fireproof());
+    public static final DragonAmuletItem SKELETON_DRAGON_AMULET = createDragonAmulet("skeleton_dragon_amulet", DragonTypes.SKELETON, none());
+    public static final DragonAmuletItem WITHER_DRAGON_AMULET = createDragonAmulet("wither_dragon_amulet", DragonTypes.WITHER, none());
+    //Dragon Essences
+    public static final DragonEssenceItem FOREST_DRAGON_ESSENCE = createDragonEssence("forest_dragon_essence", DragonTypes.FOREST, none());
+    public static final DragonEssenceItem FIRE_DRAGON_ESSENCE = createDragonEssence("fire_dragon_essence", DragonTypes.FIRE, none());
+    public static final DragonEssenceItem ICE_DRAGON_ESSENCE = createDragonEssence("ice_dragon_essence", DragonTypes.ICE, none());
+    public static final DragonEssenceItem WATER_DRAGON_ESSENCE = createDragonEssence("water_dragon_essence", DragonTypes.WATER, none());
+    public static final DragonEssenceItem AETHER_DRAGON_ESSENCE = createDragonEssence("aether_dragon_essence", DragonTypes.AETHER, none());
+    public static final DragonEssenceItem NETHER_DRAGON_ESSENCE = createDragonEssence("nether_dragon_essence", DragonTypes.NETHER, none());
+    public static final DragonEssenceItem ENDER_DRAGON_ESSENCE = createDragonEssence("ender_dragon_essence", DragonTypes.ENDER, none());
+    public static final DragonEssenceItem SUNLIGHT_DRAGON_ESSENCE = createDragonEssence("sunlight_dragon_essence", DragonTypes.SUNLIGHT, none());
+    public static final DragonEssenceItem ENCHANT_DRAGON_ESSENCE = createDragonEssence("enchant_dragon_essence", DragonTypes.ENCHANT, none());
+    public static final DragonEssenceItem STORM_DRAGON_ESSENCE = createDragonEssence("storm_dragon_essence", DragonTypes.STORM, none());
+    public static final DragonEssenceItem TERRA_DRAGON_ESSENCE = createDragonEssence("terra_dragon_essence", DragonTypes.TERRA, none());
+    public static final DragonEssenceItem ZOMBIE_DRAGON_ESSENCE = createDragonEssence("zombie_dragon_essence", DragonTypes.ZOMBIE, none());
+    public static final DragonEssenceItem MOONLIGHT_DRAGON_ESSENCE = createDragonEssence("moonlight_dragon_essence", DragonTypes.MOONLIGHT, none());
+    public static final DragonEssenceItem SCULK_DRAGON_ESSENCE = createDragonEssence("sculk_dragon_essence", DragonTypes.SCULK, none().fireproof());
+    public static final DragonEssenceItem SKELETON_DRAGON_ESSENCE = createDragonEssence("skeleton_dragon_essence", DragonTypes.SKELETON, none());
+    public static final DragonEssenceItem WITHER_DRAGON_ESSENCE = createDragonEssence("wither_dragon_essence", DragonTypes.WITHER, none());
+
+    static DragonAmuletItem createDragonAmulet(String name, DragonType type, Settings settings) {
+        DragonAmuletItem item = new DragonAmuletItem(type, settings);
+        type.bindInstance(DragonAmuletItem.class, item);
+        return Registry.register(Registry.ITEM, makeId(name), item);
     }
 
-    private static DragonScaleAxeItem createDragonScaleAxe(String name, DragonScaleTier tier, float attackDamageModifier, float attackSpeedModifier, Settings settings) {
+    static DragonArmorItem createDragonArmor(String name, String texture, int protection, Settings settings) {
+        return Registry.register(Registry.ITEM, makeId(name), new DragonArmorItem(new Identifier(DragonMounts.MOD_ID, texture), protection, settings));
+    }
+
+    static DragonEssenceItem createDragonEssence(String name, DragonType type, Settings settings) {
+        DragonEssenceItem item = new DragonEssenceItem(type, settings);
+        type.bindInstance(DragonEssenceItem.class, item);
+        return Registry.register(Registry.ITEM, makeId(name), item);
+    }
+
+    static DragonScaleAxeItem createDragonScaleAxe(String name, DragonScaleTier tier, float attackDamageModifier, float attackSpeedModifier, Settings settings) {
         DragonScaleAxeItem item = new DragonScaleAxeItem(tier, attackDamageModifier, attackSpeedModifier, settings);
         tier.type.bindInstance(DragonScaleAxeItem.class, item);
-        return Registry.register(Registry.ITEM, new Identifier(MOD_ID, name), item);
+        return Registry.register(Registry.ITEM, makeId(name), item);
     }
 
-    private static DragonScaleAxeItem createDragonScaleAxe(String name, DragonScaleTier tier, Settings settings) {
+    static DragonScaleAxeItem createDragonScaleAxe(String name, DragonScaleTier tier, Settings settings) {
         return createDragonScaleAxe(name, tier, 5.0F, -2.8F, settings);
     }
 
-    private static DragonScaleBowItem createDragonScaleBow(String name, DragonScaleTier tier, Settings settings) {
+    static DragonScaleBowItem createDragonScaleBow(String name, DragonScaleTier tier, Settings settings) {
         DragonScaleBowItem item = new DragonScaleBowItem(tier, settings);
         tier.type.bindInstance(DragonScaleBowItem.class, item);
-        return Registry.register(Registry.ITEM, new Identifier(MOD_ID, name), item);
+        return Registry.register(Registry.ITEM, makeId(name), item);
     }
 
-    private static DragonScaleHoeItem createDragonScaleHoe(String name, DragonScaleTier tier, Settings settings) {
+    static DragonScaleHoeItem createDragonScaleHoe(String name, DragonScaleTier tier, Settings settings) {
         DragonScaleHoeItem item = new DragonScaleHoeItem(tier, (int) -tier.getAttackDamage(), tier.getAttackDamage() - 3.0F, settings);
         tier.type.bindInstance(DragonScaleHoeItem.class, item);
-        return Registry.register(Registry.ITEM, new Identifier(MOD_ID, name), item);
+        return Registry.register(Registry.ITEM, makeId(name), item);
     }
 
-    private static DragonScalePickaxeItem createDragonScalePickaxe(String name, DragonScaleTier tier, Settings settings) {
+    static DragonScalePickaxeItem createDragonScalePickaxe(String name, DragonScaleTier tier, Settings settings) {
         DragonScalePickaxeItem item = new DragonScalePickaxeItem(tier, 1, -2.8F, settings);
         tier.type.bindInstance(DragonScalePickaxeItem.class, item);
-        return Registry.register(Registry.ITEM, new Identifier(MOD_ID, name), item);
+        return Registry.register(Registry.ITEM, makeId(name), item);
     }
 
-    private static DragonScaleArmorSuit createDragonScaleArmors(
+    static DragonScaleArmorSuit createDragonScaleArmors(
             String helmet,
             String chestplate,
             String leggings,
             String boots,
             DragonScaleMaterial material,
             IDragonScaleArmorEffect effect,
-            Function<EquipmentSlot, Settings> settings
+            Function<EquipmentSlot, Settings> factory
     ) {
-        DragonScaleArmorSuit suit = new DragonScaleArmorSuit(material, effect, settings);
+        DragonScaleArmorSuit suit = new DragonScaleArmorSuit(material, effect, factory);
         material.type.bindInstance(DragonScaleArmorSuit.class, suit);
         Registry.register(Registry.ITEM, new Identifier(MOD_ID, helmet), suit.helmet);
         Registry.register(Registry.ITEM, new Identifier(MOD_ID, chestplate), suit.chestplate);
@@ -356,45 +406,40 @@ public class DMItems {
         return suit;
     }
 
-    private static DragonScalesItem createDragonScales(String name, DragonType type, Settings settings) {
+    static DragonScalesItem createDragonScales(String name, DragonType type, Settings settings) {
         DragonScalesItem item = new DragonScalesItem(type, settings);
         type.bindInstance(DragonScalesItem.class, item);
-        return Registry.register(Registry.ITEM, new Identifier(MOD_ID, name), item);
+        return Registry.register(Registry.ITEM, makeId(name), item);
     }
 
-    private static DragonScaleShieldItem createDragonScaleShield(String name, DragonScaleMaterial material, Settings settings) {
+    static DragonScaleShieldItem createDragonScaleShield(String name, DragonScaleMaterial material, Settings settings) {
         DragonScaleShieldItem item = new DragonScaleShieldItem(material, settings);
         material.getDragonType().bindInstance(DragonScaleShieldItem.class, item);
-        return Registry.register(Registry.ITEM, new Identifier(MOD_ID, name), item);
+        return Registry.register(Registry.ITEM, makeId(name), item);
     }
 
-    private static DragonScaleShovelItem createDragonScaleShovel(String name, DragonScaleTier tier, Settings settings) {
+    static DragonScaleShovelItem createDragonScaleShovel(String name, DragonScaleTier tier, Settings settings) {
         DragonScaleShovelItem item = new DragonScaleShovelItem(tier, 1.5F, -3.0F, settings);
         tier.type.bindInstance(DragonScaleShovelItem.class, item);
-        return Registry.register(Registry.ITEM, new Identifier(MOD_ID, name), item);
+        return Registry.register(Registry.ITEM, makeId(name), item);
     }
 
-    private static DragonScaleSwordItem createDragonScaleSword(String name, DragonScaleTier tier, Settings settings) {
+    static DragonScaleSwordItem createDragonScaleSword(String name, DragonScaleTier tier, Settings settings) {
         DragonScaleSwordItem item = new DragonScaleSwordItem(tier, 3, -2.0F, settings);
         tier.type.bindInstance(DragonScaleSwordItem.class, item);
-        return Registry.register(Registry.ITEM, new Identifier(MOD_ID, name), item);
+        return Registry.register(Registry.ITEM, makeId(name), item);
     }
 
-    private static DragonSpawnEggItem createDragonSpawnEgg(String name, DragonType type, int background, int highlight, Settings settings) {
+    static DragonSpawnEggItem createDragonSpawnEgg(String name, DragonType type, int background, int highlight, Settings settings) {
         DragonSpawnEggItem item = new DragonSpawnEggItem(type, background, highlight, settings);
         type.bindInstance(DragonSpawnEggItem.class, item);
-        return Registry.register(Registry.ITEM, new Identifier(MOD_ID, name), item);
+        return Registry.register(Registry.ITEM, makeId(name), item);
     }
 
-    private static TieredShearsItem createTieredShears(String name, ToolMaterial tier, Settings settings) {
+    static TieredShearsItem createTieredShears(String name, ToolMaterial tier, Settings settings) {
         TieredShearsItem item = new TieredShearsItem(tier, settings);
-        return Registry.register(Registry.ITEM, new Identifier(MOD_ID, name), item);
+        return Registry.register(Registry.ITEM, makeId(name), item);
     }
 
-    public static void init() {
-        /*MinecraftForge.EVENT_BUS.addListener(DMArmorEffects::xpBonus);
-        MinecraftForge.EVENT_BUS.addListener(DMArmorEffects::meleeChanneling);
-        MinecraftForge.EVENT_BUS.addListener(DMArmorEffects::riposte);
-        MinecraftForge.EVENT_BUS.addListener(HatchableDragonEggBlock::interact);*/
-    }
+    public static void init() {}
 }

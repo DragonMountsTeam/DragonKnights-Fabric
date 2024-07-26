@@ -45,12 +45,11 @@ public class DragonHeadWallBlock extends AbstractDragonHeadBlock {
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext context) {
-        BlockState state = this.getDefaultState();
         BlockPos pos = context.getBlockPos();
         BlockView level = context.getWorld();
         for (Direction direction : context.getPlacementDirections()) {
             if (direction.getAxis().isHorizontal() && !level.getBlockState(pos.offset(direction)).canReplace(context)) {
-                return state.with(HORIZONTAL_FACING, direction.getOpposite());
+                return this.getDefaultState().with(HORIZONTAL_FACING, direction.getOpposite());
             }
         }
         return null;

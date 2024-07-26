@@ -63,15 +63,17 @@ public class DragonCoreBlock extends BlockWithEntity {
                 player.incrementStat(Stats.OPEN_SHULKER_BOX);
             }
             return ActionResult.CONSUME;
-        } else return ActionResult.PASS;
+        }
+        return ActionResult.PASS;
     }
 
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         if (stack.hasCustomName()) {
             BlockEntity entity = world.getBlockEntity(pos);
-            if (entity instanceof DragonCoreBlockEntity)
+            if (entity instanceof DragonCoreBlockEntity) {
                 ((DragonCoreBlockEntity) entity).setCustomName(stack.getName());
+            }
         }
     }
 
@@ -82,16 +84,16 @@ public class DragonCoreBlock extends BlockWithEntity {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean pIsMoving) {
+    public void onStateReplaced(BlockState state, World level, BlockPos pos, BlockState newState, boolean pIsMoving) {
         if (!state.isOf(newState.getBlock())) {
-            world.playSound(null, pos, SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 0.3F, world.random.nextFloat() * 0.1F + 0.3F);
-            world.playSound(null, pos, SoundEvents.ENTITY_ENDER_EYE_DEATH, SoundCategory.BLOCKS, 2.0F, world.random.nextFloat() * 0.1F + 0.3F);
-            BlockEntity entity = world.getBlockEntity(pos);
+            level.playSound(null, pos, SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 0.3F, level.random.nextFloat() * 0.1F + 0.3F);
+            level.playSound(null, pos, SoundEvents.ENTITY_ENDER_EYE_DEATH, SoundCategory.BLOCKS, 2.0F, level.random.nextFloat() * 0.1F + 0.3F);
+            BlockEntity entity = level.getBlockEntity(pos);
             if (entity instanceof DragonCoreBlockEntity) {
-                ItemScatterer.spawn(world, pos, (Inventory) entity);
-                world.updateComparators(pos, state.getBlock());
+                ItemScatterer.spawn(level, pos, (Inventory) entity);
+                level.updateComparators(pos, state.getBlock());
             }
-            super.onStateReplaced(state, world, pos, newState, pIsMoving);
+            super.onStateReplaced(state, level, pos, newState, pIsMoving);
         }
     }
 

@@ -37,10 +37,10 @@ public class DragonArmorItem extends Item {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        tooltip.add(LiteralText.EMPTY);
-        tooltip.add((new TranslatableText("item.modifiers.equipped").formatted(Formatting.GRAY)));
-        tooltip.add((new TranslatableText("attribute.modifier.plus.0", this.protection, new TranslatableText(GENERIC_ARMOR.getTranslationKey()))).formatted(Formatting.BLUE));
+    public void appendTooltip(ItemStack stack, @Nullable World level, List<Text> tooltips, TooltipContext flag) {
+        tooltips.add(LiteralText.EMPTY);
+        tooltips.add((new TranslatableText("item.modifiers.equipped").formatted(Formatting.GRAY)));
+        tooltips.add((new TranslatableText("attribute.modifier.plus.0", this.protection, new TranslatableText(GENERIC_ARMOR.getTranslationKey()))).formatted(Formatting.BLUE));
     }
 
     public Identifier getDragonArmorTexture(ItemStack stack, TameableDragonEntity dragon) {

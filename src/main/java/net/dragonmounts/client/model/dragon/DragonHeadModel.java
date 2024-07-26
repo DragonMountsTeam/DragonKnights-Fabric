@@ -53,12 +53,15 @@ public class DragonHeadModel extends Model {
         }
 
         protected void buildHead() {
-            //main head
-            this.setTextureOffset(0, 0).addCuboid(-8, -8, 6 + HEAD_OFS, HEAD_SIZE, HEAD_SIZE, HEAD_SIZE);
-            //upper jaw
-            this.setTextureOffset(56, 88).addCuboid(-6, -1, -8 + HEAD_OFS, JAW_WIDTH, JAW_HEIGHT, JAW_LENGTH);
-            //nostril
-            this.setTextureOffset(48, 0)
+            this
+                    //main head
+                    .setTextureOffset(0, 0)
+                    .addCuboid(-8, -8, 6 + HEAD_OFS, HEAD_SIZE, HEAD_SIZE, HEAD_SIZE)
+                    //upper jaw
+                    .setTextureOffset(56, 88)
+                    .addCuboid(-6, -1, -8 + HEAD_OFS, JAW_WIDTH, JAW_HEIGHT, JAW_LENGTH)
+                    //nostril
+                    .setTextureOffset(48, 0)
                     .addCuboid(-5, -3, -6 + HEAD_OFS, 2, 2, 4, false)
                     .addCuboid(3, -3, -6 + HEAD_OFS, 2, 2, 4, true);
         }

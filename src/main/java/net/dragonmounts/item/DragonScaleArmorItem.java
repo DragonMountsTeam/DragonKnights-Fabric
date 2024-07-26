@@ -47,10 +47,10 @@ public class DragonScaleArmorItem extends ArmorItem implements IDragonTypified, 
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        tooltip.add(this.type.getName());
+    public void appendTooltip(ItemStack stack, @Nullable World level, List<Text> tooltips, TooltipContext flag) {
+        tooltips.add(this.type.getName());
         if (this.effect == null) return;
-        this.effect.appendHoverText(stack, world, tooltip);
+        this.effect.appendHoverText(stack, level, tooltips);
     }
 
     @Override

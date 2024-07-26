@@ -24,8 +24,6 @@ import static net.dragonmounts.init.DMItemGroups.none;
 
 public class DMBlocks {
     private static final ToIntFunction<BlockState> DRAGON_EGG_LUMINANCE = state -> 1;
-    public static final Block DRAGON_NEST;
-    public static final DragonCoreBlock DRAGON_CORE;
     public static final HatchableDragonEggBlock AETHER_DRAGON_EGG = registerDragonEggBlock("aether_dragon_egg", DragonTypes.AETHER, MapColor.LIGHT_BLUE, block().rarity(Rarity.UNCOMMON));
     public static final HatchableDragonEggBlock ENCHANT_DRAGON_EGG = registerDragonEggBlock("enchant_dragon_egg", DragonTypes.ENCHANT, MapColor.PURPLE, block().rarity(Rarity.UNCOMMON));
     public static final HatchableDragonEggBlock ENDER_DRAGON_EGG = registerDragonEggBlock("ender_dragon_egg", DragonTypes.ENDER, MapColor.BLACK, block().rarity(Rarity.EPIC));
@@ -42,7 +40,8 @@ public class DMBlocks {
     public static final HatchableDragonEggBlock WATER_DRAGON_EGG = registerDragonEggBlock("water_dragon_egg", DragonTypes.WATER, MapColor.WATER_BLUE, block().rarity(Rarity.UNCOMMON));
     public static final HatchableDragonEggBlock WITHER_DRAGON_EGG = registerDragonEggBlock("wither_dragon_egg", DragonTypes.WITHER, MapColor.GRAY, block().rarity(Rarity.UNCOMMON));
     public static final HatchableDragonEggBlock ZOMBIE_DRAGON_EGG = registerDragonEggBlock("zombie_dragon_egg", DragonTypes.ZOMBIE, MapColor.TERRACOTTA_GREEN, block().rarity(Rarity.UNCOMMON));
-
+    public static final Block DRAGON_NEST;
+    public static final DragonCoreBlock DRAGON_CORE;
     static {
         final Block block = new Block(AbstractBlock.Settings.of(Material.STONE, MapColor.OAK_TAN).strength(1.0F).sounds(BlockSoundGroup.WOOD));
         final Identifier identifier = new Identifier(MOD_ID, "dragon_nest");
@@ -52,10 +51,9 @@ public class DMBlocks {
     }
 
     static {
-        final AbstractBlock.ContextPredicate predicate = (state, world, pos) -> {
-            BlockEntity entity = world.getBlockEntity(pos);
-            if (entity instanceof DragonCoreBlockEntity) return ((DragonCoreBlockEntity) entity).isClosed();
-            return true;
+        final AbstractBlock.ContextPredicate predicate = ($, level, pos) -> {
+            BlockEntity entity = level.getBlockEntity(pos);
+            return entity instanceof DragonCoreBlockEntity && ((DragonCoreBlockEntity) entity).isClosed();
         };
         final DragonCoreBlock block = new DragonCoreBlock(AbstractBlock.Settings.of(Material.PORTAL, MapColor.BLACK)
                 .strength(2000, 600)

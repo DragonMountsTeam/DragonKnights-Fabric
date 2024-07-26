@@ -8,29 +8,9 @@ import net.minecraft.item.ItemStack;
 import static net.dragonmounts.DragonMounts.MOD_ID;
 
 public class DMItemGroups {
-    private static int getIndex() {
-        ((ItemGroupExtensions) ItemGroup.INVENTORY).fabric_expandArray();
-        return ItemGroup.GROUPS.length - 1;
-    }
-
-    public static final ItemGroup BLOCK_TAB = new Impl(getIndex(), "blocks") {
-        @Override
-        public ItemStack createIcon() {
-            return new ItemStack(DMBlocks.ENDER_DRAGON_EGG);
-        }
-    };
-    public static final ItemGroup ITEM_TAB = new Impl(getIndex(), "items") {
-        @Override
-        public ItemStack createIcon() {
-            return new ItemStack(DMItems.ENDER_DRAGON_SCALES);
-        }
-    };
-    public static final ItemGroup TOOL_TAB = new Impl(getIndex(), "tools") {
-        @Override
-        public ItemStack createIcon() {
-            return new ItemStack(DMItems.ENDER_DRAGON_SCALE_SWORD);
-        }
-    };
+    public static final ItemGroup BLOCK_TAB;
+    public static final ItemGroup ITEM_TAB;
+    public static final ItemGroup TOOL_TAB;
 
     public static FabricItemSettings none() {
         return new FabricItemSettings();
@@ -46,6 +26,32 @@ public class DMItemGroups {
 
     public static FabricItemSettings tool() {
         return new FabricItemSettings().group(TOOL_TAB);
+    }
+
+    static {
+        ItemGroupExtensions extensions = ((ItemGroupExtensions) ItemGroup.INVENTORY);
+        extensions.fabric_expandArray();
+        extensions.fabric_expandArray();
+        extensions.fabric_expandArray();
+        int index = ItemGroup.GROUPS.length;
+        TOOL_TAB = new Impl(--index, "tools") {
+            @Override
+            public ItemStack createIcon() {
+                return new ItemStack(DMItems.ENDER_DRAGON_SCALE_SWORD);
+            }
+        };
+        ITEM_TAB = new Impl(--index, "items") {
+            @Override
+            public ItemStack createIcon() {
+                return new ItemStack(DMItems.ENDER_DRAGON_SCALES);
+            }
+        };
+        BLOCK_TAB = new Impl(--index, "blocks") {
+            @Override
+            public ItemStack createIcon() {
+                return new ItemStack(DMBlocks.ENDER_DRAGON_EGG);
+            }
+        };
     }
 
     public static abstract class Impl extends ItemGroup {

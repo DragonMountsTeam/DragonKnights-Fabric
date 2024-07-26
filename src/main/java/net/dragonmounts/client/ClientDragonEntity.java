@@ -1,6 +1,6 @@
 package net.dragonmounts.client;
 
-import net.dragonmounts.DragonMountsConfig;
+import net.dragonmounts.config.ClientConfig;
 import net.dragonmounts.data.tag.DMItemTags;
 import net.dragonmounts.data.tag.ForgeTags;
 import net.dragonmounts.entity.dragon.DragonLifeStage;
@@ -27,6 +27,7 @@ import net.minecraft.world.World;
 
 public class ClientDragonEntity extends TameableDragonEntity {
     public final DragonAnimationContext context = new DragonAnimationContext(this);
+    public boolean renderCrystalBeams = true;
     private int rideFlag = -1;
 
     public ClientDragonEntity(EntityType<? extends TameableDragonEntity> type, World world) {
@@ -35,11 +36,12 @@ public class ClientDragonEntity extends TameableDragonEntity {
 
     public void onWingsDown(float speed) {
         if (!this.isTouchingWater()) {
+            Vec3d pos = this.getPos();
             // play wing sounds
             this.world.playSound(
-                    this.getX(),
-                    this.getY(),
-                    this.getZ(),
+                    pos.x,
+                    pos.y,
+                    pos.z,
                     SoundEvents.ENTITY_ENDER_DRAGON_FLAP,
                     SoundCategory.VOICE,
                     (1 - speed) * this.getSoundPitch(),
@@ -86,7 +88,7 @@ public class ClientDragonEntity extends TameableDragonEntity {
                         item instanceof SaddleItem ||
                                 item instanceof DragonArmorItem ||
                                 DMItemTags.BATONS.contains(item) ||
-                                ForgeTags.Items.CHESTS_WOODEN.contains(item)
+                                ForgeTags.Item.CHESTS_WOODEN.contains(item)
                 )
         ) ? ActionResult.CONSUME : ActionResult.PASS;
     }
@@ -111,9 +113,9 @@ public class ClientDragonEntity extends TameableDragonEntity {
             ) | (
                     DMKeyBindings.DESCENT.isPressed() ? 0b0010 : 0
             ) | (
-                    DragonMountsConfig.CLIENT.converge_pitch_angle.get() ? 0b0100 : 0
+                    ClientConfig.INSTANCE.converge_pitch_angle.get() ? 0b0100 : 0
             ) | (
-                    DragonMountsConfig.CLIENT.converge_yaw_angle.get() ? 0b1000 : 0
+                    ClientConfig.INSTANCE.converge_yaw_angle.get() ? 0b1000 : 0
             );
             if (this.rideFlag != flag) {
                 PacketByteBuf buffer = this.writeId(PacketByteBufs.create());

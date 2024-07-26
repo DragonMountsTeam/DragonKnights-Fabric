@@ -19,28 +19,12 @@ public class ArmorSuit<T extends ArmorItem, M extends ArmorMaterial> {
         this.boots = boots;
     }
 
-    public final T getHelmet() {
-        return this.helmet;
-    }
-
-    public final T getChestplate() {
-        return this.chestplate;
-    }
-
-    public final T getLeggings() {
-        return this.leggings;
-    }
-
-    public final T getBoots() {
-        return this.boots;
-    }
-
     public final T bySlot(EquipmentSlot slot) {
-        switch (slot) {
-            case HEAD: return this.helmet;
-            case CHEST: return this.chestplate;
-            case LEGS: return this.leggings;
-            case FEET: return this.boots;
+        switch (slot.getArmorStandSlotId()) {
+            case 4: return this.helmet;
+            case 3: return this.chestplate;
+            case 2: return this.leggings;
+            case 1: return this.boots;
             default: return null;
         }
     }

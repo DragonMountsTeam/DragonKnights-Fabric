@@ -19,7 +19,7 @@ public class DMEntities {
             FabricEntityTypeBuilder.<HatchableDragonEggEntity>createLiving()
                     .entityFactory(HatchableDragonEggEntity::new)
                     .defaultAttributes(HatchableDragonEggEntity::createAttributes)
-                    .dimensions(EntityDimensions.fixed(0.875F, 1.0F))
+                    .dimensions(new EntityDimensions(0.875F, 1.0F, false))
                     .fireImmune()
                     .build()
     );
@@ -29,7 +29,7 @@ public class DMEntities {
             FabricEntityTypeBuilder.<TameableDragonEntity>createMob()
                     .entityFactory(TameableDragonEntity::construct)
                     .defaultAttributes(TameableDragonEntity::createAttributes)
-                    .dimensions(EntityDimensions.fixed(4.8F, 4.2F))
+                    .dimensions(new EntityDimensions(4.8F, 4.2F, false))
                     .spawnGroup(SpawnGroup.CREATURE)
                     .fireImmune()
                     .build()

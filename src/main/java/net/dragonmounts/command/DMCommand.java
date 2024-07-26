@@ -28,7 +28,7 @@ public class DMCommand {
                 .then(ConfigCommand.register(dedicated))
                 .then(CooldownCommand.register())
                 .then(FreeCommand.register())
-                //.then(StageCommand.register())
+                .then(StageCommand.register())
                 .then(TameCommand.register())
                 .then(TypeCommand.register());
         dispatcher.register(builder);
@@ -53,8 +53,7 @@ public class DMCommand {
             throw EntityArgumentType.ENTITY_NOT_FOUND_EXCEPTION.create();
         } else if (profiles.size() > 1) {
             throw EntityArgumentType.TOO_MANY_ENTITIES_EXCEPTION.create();
-        } else {
-            return profiles.stream().findAny().get();
         }
+        return profiles.stream().findAny().get();
     }
 }

@@ -1,7 +1,6 @@
 package net.dragonmounts.mixin;
 
 import net.dragonmounts.client.render.block.DragonHeadRenderer;
-import net.dragonmounts.client.variant.VariantAppearances;
 import net.dragonmounts.item.DragonHeadItem;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -46,7 +45,7 @@ public abstract class HeadFeatureRendererMixin {
     ) {
         if (item instanceof DragonHeadItem) {
             DragonHeadRenderer.renderHead(
-                    ((DragonHeadItem) item).variant.getAppearance(VariantAppearances.ENDER_FEMALE),
+                    ((DragonHeadItem) item).variant,
                     0D,
                     flag ? -0.0078125D : -0.0703125D,
                     0D,

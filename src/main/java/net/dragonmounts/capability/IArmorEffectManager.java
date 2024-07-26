@@ -5,7 +5,6 @@ import net.dragonmounts.registry.CooldownCategory;
 import net.minecraft.nbt.NbtCompound;
 
 public interface IArmorEffectManager {
-
     @SuppressWarnings("UnusedReturnValue")
     int stackLevel(IArmorEffect effect);
 
@@ -20,11 +19,13 @@ public interface IArmorEffectManager {
 
     int getCooldown(CooldownCategory category);
 
+    boolean isAvailable(CooldownCategory category);
+
     void tick();
 
     NbtCompound saveNBT();
 
-    void readNBT(NbtCompound nbt);
+    void readNBT(NbtCompound tag);
 
     void sendInitPacket();
 

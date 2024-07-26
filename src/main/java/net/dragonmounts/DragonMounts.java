@@ -2,6 +2,8 @@ package net.dragonmounts;
 
 import net.dragonmounts.capability.ArmorEffectManager;
 import net.dragonmounts.command.DMCommand;
+import net.dragonmounts.config.ClientConfig;
+import net.dragonmounts.config.ServerConfig;
 import net.dragonmounts.entity.dragon.ServerDragonEntity;
 import net.dragonmounts.init.*;
 import net.dragonmounts.network.DMPackets;
@@ -20,14 +22,23 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
+
+import java.util.Locale;
 
 public class DragonMounts implements ModInitializer {
     public static final String MOD_ID = "dragonmounts";
     public static final String ITEM_TRANSLATION_KEY_PREFIX = "item." + MOD_ID + '.';
     public static final String BLOCK_TRANSLATION_KEY_PREFIX = "block." + MOD_ID + '.';
 
+    public static Identifier makeId(String name) {
+        return new Identifier(MOD_ID, name.toLowerCase(Locale.ROOT));
+    }
+
     public void onInitialize() {
-        DragonMountsConfig.init();
+        DMGameRules.init();
+        ClientConfig.init();
+        ServerConfig.init();
         DMEntities.init();
         DMItems.init();
         DMBlocks.init();

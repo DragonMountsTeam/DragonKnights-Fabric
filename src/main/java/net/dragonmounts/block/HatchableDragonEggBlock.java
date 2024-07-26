@@ -23,12 +23,12 @@ import java.util.List;
 import static net.dragonmounts.DragonMounts.BLOCK_TRANSLATION_KEY_PREFIX;
 
 public class HatchableDragonEggBlock extends DragonEggBlock implements IDragonTypified {
-    public static ActionResult spawn(World world, BlockPos pos, DragonType type) {
-        world.setBlockState(pos, Blocks.AIR.getDefaultState());
-        HatchableDragonEggEntity entity = new HatchableDragonEggEntity(world);
+    public static ActionResult spawn(World level, BlockPos pos, DragonType type) {
+        level.setBlockState(pos, Blocks.AIR.getDefaultState());
+        HatchableDragonEggEntity entity = new HatchableDragonEggEntity(level);
         entity.setDragonType(type, true);
         entity.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
-        world.spawnEntity(entity);
+        level.spawnEntity(entity);
         return ActionResult.CONSUME;
     }
 
@@ -41,8 +41,8 @@ public class HatchableDragonEggBlock extends DragonEggBlock implements IDragonTy
     }
 
     @Override
-    public void onBlockBreakStart(BlockState state, World world, BlockPos pos, PlayerEntity player) {
-        if (world.getRegistryKey().equals(World.END)) super.onBlockBreakStart(state, world, pos, player);
+    public void onBlockBreakStart(BlockState state, World level, BlockPos pos, PlayerEntity player) {
+        if (level.getRegistryKey().equals(World.END)) super.onBlockBreakStart(state, level, pos, player);
     }
 
     @Override
@@ -53,15 +53,15 @@ public class HatchableDragonEggBlock extends DragonEggBlock implements IDragonTy
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (world.isClient) return ActionResult.SUCCESS;
-        if (world.getRegistryKey().equals(World.END)) return super.onUse(state, world, pos, player, hand, hit);
-        return spawn(world, pos, this.type);
+    public ActionResult onUse(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (level.isClient) return ActionResult.SUCCESS;
+        if (level.getRegistryKey().equals(World.END)) return super.onUse(state, level, pos, player, hand, hit);
+        return spawn(level, pos, this.type);
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext context) {
-        tooltip.add(this.type.getName());
+    public void appendTooltip(ItemStack stack, @Nullable BlockView level, List<Text> tooltips, TooltipContext flag) {
+        tooltips.add(this.type.getName());
     }
 
     @Override

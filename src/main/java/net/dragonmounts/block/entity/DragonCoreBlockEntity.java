@@ -24,12 +24,15 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * @see net.minecraft.block.entity.ShulkerBoxBlockEntity
@@ -56,33 +59,28 @@ public class DragonCoreBlockEntity extends LootableContainerBlockEntity implemen
 
     protected void updateAnimation() {
         this.progressOld = this.progress;
-        switch (this.stage) {
-            case CLOSED:
+        switch (this.stage.ordinal()) {
+            case 0:
                 this.progress = 0.0F;
-                break;
-            case OPENING:
-                this.progress += 0.1F;
-                if (this.progress >= 1.0F) {
+                return;
+            case 1: if ((this.progress += 0.1F) >= 1.0F) {
                     this.pushEntities();
                     this.stage = AnimationStage.OPENED;
                     this.progress = 1.0F;
                     this.updateNeighborStates();
                 }
-                break;
-            case CLOSING:
-                this.progress -= 0.1F;
-                if (this.progress <= 0.1F) {
-                    this.progress = 0.0F;
-                    //noinspection DataFlowIssue
-                    this.world.syncWorldEvent(2003, this.pos.up(), 0);
-                    this.world.breakBlock(this.pos, true);
-                    this.stage = AnimationStage.CLOSED;
-                }
-                break;
-            case OPENED:
+                return;
+            case 2:
                 this.progress = 1.0F;
+                return;
+            case 3: if ((this.progress -= 0.1F) <= 0.1F) {
+                this.progress = 0.0F;
+                //noinspection DataFlowIssue
+                this.world.syncWorldEvent(2003, this.pos.up(), 0);
+                this.world.breakBlock(this.pos, true);
+                this.stage = AnimationStage.CLOSED;
+            }
         }
-
     }
 
     public AnimationStage getAnimationStage() {
@@ -93,16 +91,24 @@ public class DragonCoreBlockEntity extends LootableContainerBlockEntity implemen
         return VoxelShapes.fullCube().getBoundingBox().stretch(0, 0.5 * this.getProgress(1.0F), 0);
     }
 
+    public float getProgress(float partialTicks) {
+        return MathHelper.lerp(partialTicks, this.progressOld, this.progress);
+    }
+
+    public boolean isClosed() {
+        return this.stage == AnimationStage.CLOSED;
+    }
+
     private void pushEntities() {
         //noinspection DataFlowIssue
-        BlockState blockstate = this.world.getBlockState(this.pos);
-        if (blockstate.getBlock() instanceof DragonCoreBlock) {
+        if (this.world.getBlockState(this.pos).getBlock() instanceof DragonCoreBlock) {
             Box box = this.getBoundingBox().offset(this.pos);
             List<Entity> list = this.world.getOtherEntities(null, box);
             if (list.isEmpty()) return;
             for (Entity entity : list) {
-                if (entity.getPistonBehavior() != PistonBehavior.IGNORE)
+                if (entity.getPistonBehavior() != PistonBehavior.IGNORE) {
                     entity.move(MovementType.SHULKER_BOX, new Vec3d(0, box.maxY + 0.01 - entity.getBoundingBox().minY, 0));
+                }
             }
         }
     }
@@ -114,17 +120,18 @@ public class DragonCoreBlockEntity extends LootableContainerBlockEntity implemen
 
     @Override
     public boolean onSyncedBlockEvent(int id, int data) {
-        if (id == 1) {
-            this.openCount = data;
-            if (data == 0) {
+        if (id == 1) switch (this.openCount = data) {
+            case 0:
                 this.stage = AnimationStage.CLOSING;
                 this.updateNeighborStates();
-            } else if (data == 1) {
+                return true;
+            case 1:
                 this.stage = AnimationStage.OPENING;
                 this.updateNeighborStates();
-            }
-            return true;
-        } else return super.onSyncedBlockEvent(id, data);
+                return true;
+            default: return true;
+        }
+        return super.onSyncedBlockEvent(id, data);
     }
 
     private void updateNeighborStates() {
@@ -135,13 +142,15 @@ public class DragonCoreBlockEntity extends LootableContainerBlockEntity implemen
     public void onOpen(PlayerEntity player) {
         if (!player.isSpectator()) {
             if (this.openCount < 0) this.openCount = 0;
-            ++this.openCount;
+            World level = this.world;
+            BlockPos pos;
             //noinspection DataFlowIssue
-            this.world.addSyncedBlockEvent(this.pos, this.getCachedState().getBlock(), 1, this.openCount);
+            level.addSyncedBlockEvent(pos = this.pos, this.getCachedState().getBlock(), 1, ++this.openCount);
             if (this.openCount == 1) {
-                this.world.playSound(null, this.pos, SoundEvents.BLOCK_ENDER_CHEST_CLOSE, SoundCategory.BLOCKS, 0.9F, this.world.random.nextFloat() * 0.1F + 0.9F);
-                this.world.playSound(null, this.pos, SoundEvents.ENTITY_ENDER_DRAGON_AMBIENT, SoundCategory.BLOCKS, 0.05F, this.world.random.nextFloat() * 0.3F + 0.9F);
-                this.world.playSound(null, this.pos, SoundEvents.BLOCK_END_PORTAL_SPAWN, SoundCategory.BLOCKS, 0.08F, this.world.random.nextFloat() * 0.1F + 0.9F);
+                Random random = level.random;
+                level.playSound(null, pos, SoundEvents.BLOCK_ENDER_CHEST_CLOSE, SoundCategory.BLOCKS, 0.9F, random.nextFloat() * 0.1F + 0.9F);
+                level.playSound(null, pos, SoundEvents.ENTITY_ENDER_DRAGON_AMBIENT, SoundCategory.BLOCKS, 0.05F, random.nextFloat() * 0.3F + 0.9F);
+                level.playSound(null, pos, SoundEvents.BLOCK_END_PORTAL_SPAWN, SoundCategory.BLOCKS, 0.08F, random.nextFloat() * 0.1F + 0.9F);
             }
 
         }
@@ -150,9 +159,8 @@ public class DragonCoreBlockEntity extends LootableContainerBlockEntity implemen
     @Override
     public void onClose(PlayerEntity player) {
         if (!player.isSpectator()) {
-            --this.openCount;
             //noinspection DataFlowIssue
-            this.world.addSyncedBlockEvent(this.pos, this.getCachedState().getBlock(), 1, this.openCount);
+            this.world.addSyncedBlockEvent(this.pos, this.getCachedState().getBlock(), 1, --this.openCount);
         }
     }
 
@@ -162,21 +170,20 @@ public class DragonCoreBlockEntity extends LootableContainerBlockEntity implemen
     }
 
     @Override
-    public void fromTag(BlockState state, NbtCompound compound) {
-        super.fromTag(state, compound);
+    public void fromTag(BlockState state, NbtCompound tag) {
+        super.fromTag(state, tag);
         this.items = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
-        if (!this.deserializeLootTable(compound)) {
-            Inventories.readNbt(compound, this.items);
+        if (!this.deserializeLootTable(tag)) {
+            Inventories.readNbt(tag, this.items);
         }
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound compound) {
-        super.writeNbt(compound);
-        if (!this.serializeLootTable(compound)) {
-            Inventories.writeNbt(compound, this.items);
+    public NbtCompound writeNbt(NbtCompound tag) {
+        if (!this.serializeLootTable(super.writeNbt(tag))) {
+            Inventories.writeNbt(tag, this.items);
         }
-        return compound;
+        return tag;
     }
 
     @Override
@@ -189,17 +196,9 @@ public class DragonCoreBlockEntity extends LootableContainerBlockEntity implemen
         this.items = items;
     }
 
-    public float getProgress(float partialTicks) {
-        return MathHelper.lerp(partialTicks, this.progressOld, this.progress);
-    }
-
     @Override
     protected ScreenHandler createScreenHandler(int id, PlayerInventory player) {
         return new DragonCoreScreenHandler(id, player, this);
-    }
-
-    public boolean isClosed() {
-        return this.stage == AnimationStage.CLOSED;
     }
 
     @Override

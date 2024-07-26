@@ -3,6 +3,7 @@ package net.dragonmounts.api;
 import net.dragonmounts.capability.ArmorEffectManager;
 import net.dragonmounts.capability.IArmorEffectManager;
 import net.dragonmounts.registry.CooldownCategory;
+import net.dragonmounts.util.TextBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
@@ -10,6 +11,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -17,45 +19,43 @@ import static net.dragonmounts.util.TimeUtil.formatAsFloat;
 import static net.minecraft.util.Util.createTranslationKey;
 
 public interface IDragonScaleArmorEffect extends IArmorEffect {
-    default void appendTriggerInfo(ItemStack stack, World world, List<Text> components) {
-        components.add(new TranslatableText("tooltip.dragonmounts.armor_effect_piece_4"));
+    default void appendTriggerInfo(ItemStack stack, World world, List<Text> tooltips) {
+        tooltips.add(new TranslatableText("tooltip.dragonmounts.armor_effect_piece_4"));
     }
 
-    default void appendHoverText(ItemStack stack, World world, List<Text> components) {}
+    default void appendHoverText(ItemStack stack, @Nullable World level, List<Text> tooltips) {}
 
     class Advanced extends CooldownCategory implements IDragonScaleArmorEffect {
+        public final TextBlock majorTooltip;
         public final int cooldown;
-        private String description;
+        public final String description;
 
         public Advanced(Identifier identifier, int cooldown) {
             super(identifier);
             this.cooldown = cooldown;
+            this.description = createTranslationKey("tooltip.armor_effect", identifier);
+            this.majorTooltip = init();
         }
 
-        protected String getOrCreateDescription() {
-            if (this.description == null)
-                this.description = createTranslationKey("tooltip.armor_effect", this.identifier);
-            return this.description;
+        protected TextBlock init() {
+            return new TextBlock(new TranslatableText(this.description));
         }
 
-        protected String getDescription() {
-            return this.getOrCreateDescription();
-        }
-
-        public void appendCooldownInfo(ItemStack stack, World world, List<Text> components) {
-            components.add(new TranslatableText(this.getDescription()));
-            int value = ArmorEffectManager.getLocalCooldown(this);
-            if (value > 0)
-                components.add(new TranslatableText("tooltip.dragonmounts.armor_effect_remaining_cooldown", formatAsFloat(value)));
-            else if (this.cooldown > 0)
-                components.add(new TranslatableText("tooltip.dragonmounts.armor_effect_cooldown", formatAsFloat(this.cooldown)));
+        public static void appendCooldownInfo(List<Text> tooltips, Advanced effect) {
+            int value = ArmorEffectManager.getLocalCooldown(effect);
+            if (value > 0) {
+                tooltips.add(new TranslatableText("tooltip.dragonmounts.armor_effect_remaining_cooldown", formatAsFloat(value)));
+            } else if (effect.cooldown > 0) {
+                tooltips.add(new TranslatableText("tooltip.dragonmounts.armor_effect_cooldown", formatAsFloat(effect.cooldown)));
+            }
         }
 
         @Override
-        public void appendHoverText(ItemStack stack, World world, List<Text> components) {
-            components.add(LiteralText.EMPTY);
-            this.appendTriggerInfo(stack, world, components);
-            this.appendCooldownInfo(stack, world, components);
+        public void appendHoverText(ItemStack stack, @Nullable World level, List<Text> tooltips) {
+            tooltips.add(LiteralText.EMPTY);
+            this.appendTriggerInfo(stack, level, tooltips);
+            this.majorTooltip.appendHoverText(tooltips);
+            appendCooldownInfo(tooltips, this);
         }
 
         @Override

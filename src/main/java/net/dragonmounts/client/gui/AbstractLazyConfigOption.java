@@ -1,13 +1,13 @@
 package net.dragonmounts.client.gui;
 
-import net.dragonmounts.util.config.AbstractConfig;
+import net.dragonmounts.config.ConfigEntry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
-public abstract class AbstractLazyConfigOption<T extends AbstractConfig> extends Option {
+public abstract class AbstractLazyConfigOption<T extends ConfigEntry> extends Option {
     public final T config;
 
     public AbstractLazyConfigOption(String caption, T config, Text tooltip) {

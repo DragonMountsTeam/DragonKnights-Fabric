@@ -14,6 +14,7 @@ import net.minecraft.item.WallStandingBlockItem;
 import net.minecraft.item.Wearable;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -27,8 +28,8 @@ public class DragonHeadItem extends WallStandingBlockItem implements Wearable, I
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        tooltip.add(this.variant.type.getName());
+    public void appendTooltip(ItemStack stack, @Nullable World level, List<Text> tooltips, TooltipContext flag) {
+        tooltips.add(this.variant.type.getName());
     }
 
     @Override

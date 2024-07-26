@@ -1,5 +1,6 @@
 package net.dragonmounts.entity.dragon;
 
+import com.google.common.base.Functions;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -26,21 +27,23 @@ public enum DragonLifeStage implements StringIdentifiable {
     ADULT(0, 1.00F, 1.00F);
     public static final String DATA_PARAMETER_KEY = "LifeStage";
     public static final String EGG_TRANSLATION_KEY = "dragon.life_stage.egg";
-    private static final DragonLifeStage[] VALUES = values();
-    private static final Map<String, DragonLifeStage> BY_NAME = Arrays.stream(VALUES)
-            .collect(Collectors.toMap(DragonLifeStage::asString, value -> value));
+    private static final DragonLifeStage[] VALUES;
+    private static final Map<String, DragonLifeStage> BY_NAME;
     public final int duration;
-    private final float startSize;
-    private final float endSize;
-    private final String name;
-    private final String text;
+    public final float startSize;
+    public final float endSize;
+    public final String name;
+    public final String text;
+
+    static {
+        BY_NAME = Arrays.stream(VALUES = values()).collect(Collectors.toMap(DragonLifeStage::asString, Functions.identity()));
+    }
 
     DragonLifeStage(int duration, float startSize, float endSize) {
         this.duration = duration;
         this.startSize = startSize;
         this.endSize = endSize;
-        this.name = this.name().toLowerCase();
-        this.text = "dragon.life_stage." + this.name;
+        this.text = "dragon.life_stage." + (this.name = this.name().toLowerCase());
     }
 
     public Text getText() {

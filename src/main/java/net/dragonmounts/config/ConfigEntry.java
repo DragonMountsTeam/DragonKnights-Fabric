@@ -1,26 +1,26 @@
-package net.dragonmounts.util.config;
+package net.dragonmounts.config;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.command.ServerCommandSource;
 
-public abstract class AbstractConfig {
+public abstract class ConfigEntry {
     public final String key;
     public final String display;
 
-    public AbstractConfig(String key) {
+    public ConfigEntry(String key) {
         this.display = (this.key = key).toLowerCase();
     }
 
-    public AbstractConfig(String key, String display) {
+    public ConfigEntry(String key, String display) {
         this.key = key;
         this.display = display;
     }
 
-    public abstract void read(NbtCompound compound);
+    public abstract void read(NbtCompound tag);
 
-    public abstract void save(NbtCompound compound);
+    public abstract void save(NbtCompound tag);
 
     protected abstract int get(CommandContext<ServerCommandSource> context);
 

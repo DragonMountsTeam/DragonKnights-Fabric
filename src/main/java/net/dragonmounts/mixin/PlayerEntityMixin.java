@@ -70,17 +70,17 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Provider
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
-    public void saveCooldown(NbtCompound nbt, CallbackInfo info) {
+    public void saveCooldown(NbtCompound tag, CallbackInfo info) {
         NbtCompound data = this.manager.saveNBT();
         if (data.isEmpty()) return;
-        NbtCompound caps = nbt.getCompound("ForgeCaps");
+        NbtCompound caps = tag.getCompound("ForgeCaps");
         caps.put(DATA_PARAMETER_KEY, data);
-        nbt.put("ForgeCaps", caps);
+        tag.put("ForgeCaps", caps);
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
-    public void readCooldown(NbtCompound nbt, CallbackInfo info) {
-        this.manager.readNBT(nbt.getCompound("ForgeCaps").getCompound(DATA_PARAMETER_KEY));
+    public void readCooldown(NbtCompound tag, CallbackInfo info) {
+        this.manager.readNBT(tag.getCompound("ForgeCaps").getCompound(DATA_PARAMETER_KEY));
     }
 
     @Inject(method = "damageShield", at = @At("HEAD"))

@@ -1,7 +1,9 @@
 package net.dragonmounts.registry;
 
+import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableMultimap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import net.dragonmounts.api.IPassengerOffset;
 import net.dragonmounts.entity.dragon.HatchableDragonEggEntity;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.block.Block;
@@ -17,14 +19,12 @@ import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 import static net.dragonmounts.DragonMounts.MOD_ID;
@@ -49,82 +49,56 @@ public class DragonType {
             return value;
         }
     };
-    public static final Predicate<HatchableDragonEggEntity> DEFAULT_ENVIRONMENT_PREDICATE = egg -> false;
-    public static final BiFunction<Integer, Boolean, Vec3d> DEFAULT_PASSENGER_OFFSET = (index, sitting) -> {
-        double yOffset = sitting ? 3.4 : 4.4;
-        double yOffset2 = sitting ? 2.1 : 2.5; // maybe not needed
-        // dragon position is the middle of the model, and the saddle is on
-        // the shoulders, so move player forwards on Z axis relative to the
-        // dragon's rotation to fix that
-        switch (index) {
-            case 1:
-                return new Vec3d(0.6, yOffset, 0.1);
-            case 2:
-                return new Vec3d(-0.6, yOffset, 0.1);
-            case 3:
-                return new Vec3d(1.6, yOffset2, 0.2);
-            case 4:
-                return new Vec3d(-1.6, yOffset2, 0.2);
-            default:
-                return new Vec3d(0, yOffset, 2.2);
-        }
-    };
-
     public final int color;
     public final boolean convertible;
     public final boolean isSkeleton;
     public final Identifier identifier;
     public final ImmutableMultimap<EntityAttribute, EntityAttributeModifier> attributes;
     public final Predicate<HatchableDragonEggEntity> isHabitatEnvironment;
-    public final BiFunction<Integer, Boolean, Vec3d> passengerOffset;
+    public final IPassengerOffset passengerOffset;
     public final ParticleEffect sneezeParticle;
     public final ParticleEffect eggParticle;
     public final DragonVariant.Manager variants = new DragonVariant.Manager(this);
+    public final String translationKey;
+    public final Identifier lootTable;
     private final Reference2ObjectOpenHashMap<Class<?>, Object> map = new Reference2ObjectOpenHashMap<>();
     private final Style style;
     private final Set<DamageSource> immunities;
     private final Set<Block> blocks;
     private final List<RegistryKey<Biome>> biomes;
-    private String translationKey;
-    private Identifier lootTable;
 
-    public DragonType(Identifier identifier, Properties properties) {
+    public DragonType(Identifier identifier, Properties props) {
         Registry.register(REGISTRY, this.identifier = identifier, this);
-        this.color = properties.color;
-        this.convertible = properties.convertible;
-        this.isSkeleton = properties.isSkeleton;
+        this.color = props.color;
+        this.convertible = props.convertible;
+        this.isSkeleton = props.isSkeleton;
         this.style = Style.EMPTY.withColor(TextColor.fromRgb(this.color));
-        this.attributes = properties.attributes.build();
-        this.immunities = new HashSet<>(properties.immunities);
-        this.blocks = new HashSet<>(properties.blocks);
-        this.biomes = new ArrayList<>();
-        this.biomes.addAll(properties.biomes);
-        this.sneezeParticle = properties.sneezeParticle;
-        this.eggParticle = properties.eggParticle;
-        this.passengerOffset = properties.passengerOffset;
-        this.isHabitatEnvironment = properties.isHabitatEnvironment;
+        this.attributes = props.attributes.build();
+        this.immunities = new HashSet<>(props.immunities);
+        this.blocks = new HashSet<>(props.blocks);
+        this.biomes = new ArrayList<>(props.biomes);
+        this.sneezeParticle = props.sneezeParticle;
+        this.eggParticle = props.eggParticle;
+        this.passengerOffset = props.passengerOffset;
+        this.isHabitatEnvironment = props.isHabitatEnvironment;
+        this.translationKey = createTranslationKey();
+        this.lootTable = createLootTable();
     }
 
-    public String getTranslationKey() {
-        if (this.translationKey == null) {
-            this.translationKey = Util.createTranslationKey("dragon_type", this.identifier);
-        }
-        return this.translationKey;
+    protected String createTranslationKey() {
+        return Util.createTranslationKey("dragon_type", this.identifier);
+    }
+
+    protected Identifier createLootTable() {
+        return new Identifier(this.identifier.getNamespace(), "entities/dragon/" + this.identifier.getPath());
     }
 
     public TranslatableText getName() {
-        return (TranslatableText) new TranslatableText(this.getTranslationKey()).fillStyle(this.style);
+        return (TranslatableText) new TranslatableText(this.translationKey).fillStyle(this.style);
     }
 
     public TranslatableText getFormattedName(String pattern) {
-        return new TranslatableText(pattern, new TranslatableText(this.getTranslationKey()));
-    }
-
-    public Identifier getLootTable() {
-        if (this.lootTable == null) {
-            this.lootTable = new Identifier(this.identifier.getNamespace(), "entities/dragon/" + this.identifier.getPath());
-        }
-        return this.lootTable;
+        return new TranslatableText(pattern, new TranslatableText(this.translationKey));
     }
 
     public boolean isInvulnerableTo(DamageSource source) {
@@ -159,8 +133,8 @@ public class DragonType {
         public boolean isSkeleton = false;
         public ParticleEffect sneezeParticle = ParticleTypes.LARGE_SMOKE;
         public ParticleEffect eggParticle = ParticleTypes.MYCELIUM;
-        public BiFunction<Integer, Boolean, Vec3d> passengerOffset = DragonType.DEFAULT_PASSENGER_OFFSET;
-        public Predicate<HatchableDragonEggEntity> isHabitatEnvironment = DragonType.DEFAULT_ENVIRONMENT_PREDICATE;
+        public IPassengerOffset passengerOffset = IPassengerOffset.DEFAULT;
+        public Predicate<HatchableDragonEggEntity> isHabitatEnvironment = Predicates.alwaysFalse();
 
         public Properties(int color) {
             this.color = color;
@@ -214,8 +188,8 @@ public class DragonType {
             return this;
         }
 
-        public Properties setPassengerOffset(BiFunction<Integer, Boolean, Vec3d> passengerOffset) {
-            this.passengerOffset = passengerOffset;
+        public Properties setPassengerOffset(IPassengerOffset offset) {
+            this.passengerOffset = offset;
             return this;
         }
 

@@ -1,6 +1,6 @@
 package net.dragonmounts.mixin;
 
-import net.dragonmounts.DragonMountsConfig;
+import net.dragonmounts.config.ClientConfig;
 import net.dragonmounts.entity.dragon.TameableDragonEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -19,7 +19,7 @@ public class ClientPlayerInteractionManagerMixin {
 
     @Inject(method = "hasRidingInventory", at = @At("RETURN"), cancellable = true)
     public void isTameableDragon(CallbackInfoReturnable<Boolean> info) {
-        if (DragonMountsConfig.CLIENT.redirect_inventory.get()) {
+        if (ClientConfig.INSTANCE.redirect_inventory.get()) {
             //noinspection DataFlowIssue
             info.setReturnValue(info.getReturnValueZ() || this.client.player.getVehicle() instanceof TameableDragonEntity);
         }

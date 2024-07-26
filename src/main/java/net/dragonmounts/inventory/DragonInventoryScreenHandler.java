@@ -54,11 +54,9 @@ public class DragonInventoryScreenHandler extends ScreenHandler {
 
     @Override
     public ItemStack transferSlot(PlayerEntity player, int index) {
-        ItemStack result = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasStack()) {
-            ItemStack stack = slot.getStack();
-            result = stack.copy();
+            ItemStack stack = slot.getStack(), copy = stack.copy();
             if (index < INVENTORY_SIZE) {
                 if (!this.insertItem(stack, INVENTORY_SIZE, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
@@ -77,31 +75,26 @@ public class DragonInventoryScreenHandler extends ScreenHandler {
                 }
             } else if (!this.dragon.hasChest() || !this.insertItem(stack, 3, INVENTORY_SIZE, false)) {
                 if (index >= PLAYER_INVENTORY_SIZE) {
-                    if (!this.insertItem(stack, INVENTORY_SIZE, PLAYER_INVENTORY_SIZE, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (!this.insertItem(stack, PLAYER_INVENTORY_SIZE, PLAYER_HOTBAR_SIZE, false)) {
-                    return ItemStack.EMPTY;
+                    this.insertItem(stack, INVENTORY_SIZE, PLAYER_INVENTORY_SIZE, false);
+                } else {
+                    this.insertItem(stack, PLAYER_INVENTORY_SIZE, PLAYER_HOTBAR_SIZE, false);
                 }
                 return ItemStack.EMPTY;
             }
-            if (result.isEmpty()) {
+            if (stack.isEmpty()) {
                 slot.setStack(ItemStack.EMPTY);
             } else {
                 slot.markDirty();
             }
+            return copy;
         }
-        return result;
+        return ItemStack.EMPTY;
     }
 
     @Override
     public void close(PlayerEntity player) {
         super.close(player);
         this.inventory.onClose(player);
-    }
-
-    public DragonInventory getInventory() {
-        return this.inventory;
     }
 
     @Override

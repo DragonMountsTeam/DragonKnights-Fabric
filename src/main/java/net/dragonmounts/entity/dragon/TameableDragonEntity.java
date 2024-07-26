@@ -1,18 +1,25 @@
 package net.dragonmounts.entity.dragon;
 
-import net.dragonmounts.DragonMountsConfig;
 import net.dragonmounts.api.IDragonTypified;
 import net.dragonmounts.client.ClientDragonEntity;
 import net.dragonmounts.data.tag.ForgeTags;
 import net.dragonmounts.entity.ai.DragonBodyController;
 import net.dragonmounts.entity.ai.DragonMovementController;
 import net.dragonmounts.entity.path.DragonFlyingNavigator;
+import net.dragonmounts.init.DMItems;
+import net.dragonmounts.init.DMSounds;
 import net.dragonmounts.init.DragonVariants;
 import net.dragonmounts.inventory.DragonInventory;
+import net.dragonmounts.inventory.LimitedSlot;
 import net.dragonmounts.item.DragonArmorItem;
+import net.dragonmounts.item.DragonScalesItem;
+import net.dragonmounts.item.DragonSpawnEggItem;
+import net.dragonmounts.item.TieredShearsItem;
 import net.dragonmounts.registry.DragonType;
 import net.dragonmounts.registry.DragonVariant;
 import net.dragonmounts.util.DragonFood;
+import net.dragonmounts.util.math.MathUtil;
+import net.fabricmc.fabric.api.entity.EntityPickInteractionAware;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -32,23 +39,27 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SaddleItem;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.GameRules;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
+import static net.dragonmounts.init.DMGameRules.*;
 import static net.dragonmounts.util.BlockUtil.isSolid;
 
 
@@ -56,21 +67,21 @@ import static net.dragonmounts.util.BlockUtil.isSolid;
  * @see net.minecraft.entity.passive.MuleEntity
  * @see net.minecraft.entity.passive.HorseEntity
  */
-public abstract class TameableDragonEntity extends TameableEntity implements IDragonTypified.Mutable, Flutterer {
-    public static TameableDragonEntity construct(EntityType<? extends TameableDragonEntity> type, World world) {
-        return world.isClient ? new ClientDragonEntity(type, world) : new ServerDragonEntity(type, world);
+public abstract class TameableDragonEntity extends TameableEntity implements EntityPickInteractionAware, IDragonTypified.Mutable, Flutterer {
+    public static TameableDragonEntity construct(EntityType<? extends TameableDragonEntity> type, World level) {
+        return level.isClient ? new ClientDragonEntity(type, level) : new ServerDragonEntity(type, level);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, DragonMountsConfig.SERVER.base_health.get())
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, DEFAULT_DRAGON_BASE_HEALTH)
                 .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1.0)
                 .add(EntityAttributes.GENERIC_FLYING_SPEED, BASE_AIR_SPEED)
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, BASE_GROUND_SPEED)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DragonMountsConfig.SERVER.base_damage.get())
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DEFAULT_DRAGON_BASE_DAMAGE)
                 .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, BASE_FOLLOW_RANGE)
-                .add(EntityAttributes.GENERIC_ARMOR, DragonMountsConfig.SERVER.base_armor.get())
+                .add(EntityAttributes.GENERIC_ARMOR, DEFAULT_DRAGON_BASE_ARMOR)
                 .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, BASE_TOUGHNESS);
     }
 
@@ -129,37 +140,39 @@ public abstract class TameableDragonEntity extends TameableEntity implements IDr
     protected boolean altBreathing;
     protected boolean isGoingDown;
 
-    public TameableDragonEntity(EntityType<? extends TameableDragonEntity> type, World world) {
-        super(type, world);
+    public TameableDragonEntity(EntityType<? extends TameableDragonEntity> type, World level) {
+        super(type, level);
         this.resetAttributes();
         this.stepHeight = 1.0F;
         this.inanimate = true;
         this.moveControl = new DragonMovementController(this);
-        (this.flyingNavigation = new DragonFlyingNavigator(this, world)).setCanSwim(true);
-        (this.navigation = this.groundNavigation = new MobNavigation(this, world)).setCanSwim(true);
+        (this.flyingNavigation = new DragonFlyingNavigator(this, level)).setCanSwim(true);
+        (this.navigation = this.groundNavigation = new MobNavigation(this, level)).setCanSwim(true);
     }
 
     public void resetAttributes() {
+        GameRules rules = this.world.getGameRules();
         AttributeContainer manager = this.getAttributes();
         //noinspection DataFlowIssue
-        manager.getCustomInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(DragonMountsConfig.SERVER.base_health.get());
+        manager.getCustomInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(rules.get(DRAGON_BASE_HEALTH).get());
         //noinspection DataFlowIssue
-        manager.getCustomInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(DragonMountsConfig.SERVER.base_damage.get());
+        manager.getCustomInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(rules.get(DRAGON_BASE_DAMAGE).get());
         //noinspection DataFlowIssue
-        manager.getCustomInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(DragonMountsConfig.SERVER.base_armor.get());
+        manager.getCustomInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(rules.get(DRAGON_BASE_ARMOR).get());
     }
 
     public void setSaddle(ItemStack stack, boolean sync) {
-        boolean original = this.isSaddled;
+        boolean prior = this.isSaddled;
         this.isSaddled = stack.getItem() instanceof SaddleItem;
-        if (!original && this.isSaddled && !this.world.isClient) {
-            this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
-        }
         if (!stack.isEmpty()) {
             stack.setCount(1);
         }
         this.saddle = stack;
-        if (sync && !this.world.isClient) {
+        if (this.world.isClient) return;
+        if (!prior && this.isSaddled) {
+            this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
+        }
+        if (sync) {
             this.dataTracker.set(DATA_SADDLE_ITEM, stack.copy());
         }
     }
@@ -189,8 +202,9 @@ public abstract class TameableDragonEntity extends TameableEntity implements IDr
     }
 
     public void setChest(ItemStack stack, boolean sync) {
-        //this.hasChest = Tags.Items.CHESTS_WOODEN.contains(stack.getItem());
-        if (!this.hasChest) {
+        boolean prior = this.hasChest;
+        this.hasChest = ForgeTags.Item.CHESTS_WOODEN.contains(stack.getItem());
+        if (prior && !this.hasChest) {
             this.inventory.dropContents(true, 0);
         }
         if (!stack.isEmpty()) {
@@ -315,7 +329,7 @@ public abstract class TameableDragonEntity extends TameableEntity implements IDr
             this.armor = this.dataTracker.get(DATA_ARMOR_ITEM);
         } else if (DATA_CHEST_ITEM.equals(key)) {
             this.chest = this.dataTracker.get(DATA_CHEST_ITEM);
-            this.hasChest = ForgeTags.Items.CHESTS_WOODEN.contains(this.chest.getItem());
+            this.hasChest = ForgeTags.Item.CHESTS_WOODEN.contains(this.chest.getItem());
         } else {
             super.onTrackedDataSet(key);
         }
@@ -336,11 +350,9 @@ public abstract class TameableDragonEntity extends TameableEntity implements IDr
 
     @Override
     public final void calculateDimensions() {
-        double d0 = this.getX();
-        double d1 = this.getY();
-        double d2 = this.getZ();
+        Vec3d pos = this.getPos();
         super.calculateDimensions();
-        this.setPos(d0, d1, d2);
+        this.setPosition(pos.x, pos.y, pos.z);
     }
 
     @Override
@@ -355,7 +367,7 @@ public abstract class TameableDragonEntity extends TameableEntity implements IDr
 
     @Override
     public final boolean isBreedingItem(ItemStack stack) {
-        return DragonFood.test(stack.getItem());
+        return !stack.isEmpty() && DragonFood.test(stack.getItem());
     }
 
     /*@Override
@@ -365,7 +377,7 @@ public abstract class TameableDragonEntity extends TameableEntity implements IDr
 
     @Override
     protected Identifier getLootTableId() {
-        return this.getDragonType().getLootTable();
+        return this.getDragonType().lootTable;
     }
 
     @Override
@@ -400,6 +412,13 @@ public abstract class TameableDragonEntity extends TameableEntity implements IDr
     }
 
     @Override
+    public ItemStack getPickedStack(@Nullable PlayerEntity player, @Nullable HitResult result) {
+        return new ItemStack(
+                this.getDragonType().getInstance(DragonSpawnEggItem.class, DMItems.ENDER_DRAGON_SPAWN_EGG)
+        );
+    }
+
+    @Override
     public Iterable<ItemStack> getArmorItems() {
         return Collections.singletonList(this.getArmorStack());
     }
@@ -421,11 +440,11 @@ public abstract class TameableDragonEntity extends TameableEntity implements IDr
     public void updatePassengerPosition(Entity passenger) {
         int index = this.getPassengerList().indexOf(passenger);
         if (index >= 0) {
-            Vec3d pos = this.getDragonType().passengerOffset.apply(index, this.isInSittingPose())
+            Vec3d pos = this.getDragonType().passengerOffset.get(index, this.isInSittingPose())
                     .multiply(this.getScaleFactor())
-                    .rotateY((float) Math.toRadians(-this.bodyYaw))
+                    .rotateY(MathUtil.TO_RAD_FACTOR * -this.bodyYaw)
                     .add(this.getPos());
-            passenger.setPos(pos.x, /*passenger instanceof PlayerEntity ? pos.y - this.getScale() * 0.2D :*/ pos.y, pos.z);
+            passenger.setPosition(pos.x, /*passenger instanceof PlayerEntity ? pos.y - this.getScale() * 0.2D :*/ pos.y, pos.z);
             if (index == 0) {
                 this.onPassengerLookAround(passenger);
                 passenger.prevPitch = passenger.pitch;
@@ -435,7 +454,7 @@ public abstract class TameableDragonEntity extends TameableEntity implements IDr
 
     @Override
     public double getHeightOffset() {
-        return this.getDragonType().passengerOffset.apply(0, this.isInSittingPose()).y * this.getScaleFactor();
+        return this.getDragonType().passengerOffset.get(0, this.isInSittingPose()).y * this.getScaleFactor();
     }
 
     @Override
@@ -455,11 +474,18 @@ public abstract class TameableDragonEntity extends TameableEntity implements IDr
     protected void updatePostDeath() {
         if (++this.deathTime >= this.getMaxDeathTime()) {
             this.remove();
+            World level = this.world;
+            Random random = this.random;
             for (int i = 0; i < 20; ++i) {
-                double d0 = this.random.nextGaussian() * 0.02;
-                double d1 = this.random.nextGaussian() * 0.02;
-                double d2 = this.random.nextGaussian() * 0.02;
-                this.world.addParticle(ParticleTypes.POOF, this.getParticleX(1D), this.getRandomBodyY(), this.getParticleZ(1D), d0, d1, d2);
+                level.addParticle(
+                        ParticleTypes.POOF,
+                        this.getParticleX(1D),
+                        this.getRandomBodyY(),
+                        this.getParticleZ(1D),
+                        random.nextGaussian() * 0.02,
+                        random.nextGaussian() * 0.02,
+                        random.nextGaussian() * 0.02
+                );
             }
         }
     }
@@ -512,21 +538,54 @@ public abstract class TameableDragonEntity extends TameableEntity implements IDr
         if (index < DragonInventory.INVENTORY_SIZE) {
             return this.inventory.setItemAfterChecked(index, stack);
         }
-        return super.equip(index, stack);
+        switch (index) {
+            case 98:
+                this.handItems.set(0, stack);
+                return true;
+            case 99:
+                this.handItems.set(1, stack);
+                return true;
+            case 100:
+            case 101:
+            case 102:
+            case 103:
+                if (stack.isEmpty() || LimitedSlot.DragonArmor.canInsert(stack.getItem())) {
+                    this.setArmor(stack, true);
+                    return true;
+                }
+            default: return false;
+        }
+    }
+
+    @Override
+    public void equipStack(EquipmentSlot slot, ItemStack stack) {
+        if (slot.getType() == EquipmentSlot.Type.ARMOR) {
+            this.setArmor(stack, true);
+        } else {
+            this.handItems.set(slot.getEntitySlotId(), stack);
+        }
+    }
+
+    @Override
+    public ItemStack getEquippedStack(EquipmentSlot slot) {
+        if (slot.getType() == EquipmentSlot.Type.ARMOR) {
+            return this.getArmorStack();
+        }
+        return this.handItems.get(slot.getEntitySlotId());
     }
 
     //----------AgeableEntity----------
 
     protected void refreshAge() {
-        switch (this.stage) {
-            case NEWBORN:
-            case INFANT:
+        switch (this.stage.ordinal()) {
+            case 0:// NEWBORN
+            case 1:// INFANT
                 this.breedingAge = -this.stage.duration;
-                break;
-            case JUVENILE:
-            case PREJUVENILE:
+                return;
+            case 2:// JUVENILE
+            case 3:// PREJUVENILE
                 this.breedingAge = this.stage.duration;
-                break;
+                return;
             default:
                 this.breedingAge = 0;
         }
@@ -567,6 +626,11 @@ public abstract class TameableDragonEntity extends TameableEntity implements IDr
         this.setLifeStage(value ? DragonLifeStage.NEWBORN : DragonLifeStage.ADULT, true, true);
     }
 
+    @Override
+    protected int getXpToDrop(PlayerEntity player) {
+        return 0;
+    }
+
     //----------IDragonTypified.Mutable----------
 
     public final void setDragonType(DragonType type, boolean reset) {
@@ -603,34 +667,37 @@ public abstract class TameableDragonEntity extends TameableEntity implements IDr
         this.dataTracker.set(DATA_SHEARED, cooldown > 0);
     }
 
-    /*@Override
-    public final boolean isShearable(ItemStack stack, World world, BlockPos pos) {
+    public final boolean isShearable(ItemStack stack, World level, BlockPos pos) {
         Item item = stack.getItem();
-        return this.isAlive() && this.stage.ordinal() >= 2 && !this.isSheared() && item instanceof TieredShearsItem && ((TieredShearsItem) item).getTier().getLevel() >= 3;
+        return this.isAlive() && this.stage.ordinal() >= 2 && !this.isSheared() && item instanceof TieredShearsItem && ((TieredShearsItem) item).getTier().getMiningLevel() >= 3;
     }
 
-    @Nonnull
-    @Override
-    public List<ItemStack> onSheared(PlayerEntity player, ItemStack stack, World world, BlockPos pos, int fortune) {
+    public List<ItemStack> onSheared(PlayerEntity player, ItemStack stack, World level, BlockPos pos, int fortune) {
         DragonScalesItem scale = this.getDragonType().getInstance(DragonScalesItem.class, null);
         if (scale != null) {
             this.setSheared(2500 + this.random.nextInt(1000));
-            this.playSound(DMSounds.DRAGON_GROWL.get(), 1.0F, 1.0F);
+            this.playSound(DMSounds.DRAGON_GROWL, 1.0F, 1.0F);
             return Collections.singletonList(new ItemStack(scale, 2 + this.random.nextInt(3)));
         }
         return Collections.emptyList();
     }
 
     @Override
-    public ILivingEntityData finalizeSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData spawnData, @Nullable NbtCompound compound) {
+    public EntityData initialize(ServerWorldAccess level, LocalDifficulty difficulty, SpawnReason reason, @Nullable EntityData data, @Nullable NbtCompound tag) {
         //noinspection DataFlowIssue
-        this.getAttribute(EntityAttributes.GENERIC_FOLLOW_RANGE).addPermanentModifier(new AttributeModifier("Random spawn bonus", this.random.nextGaussian() * 0.05D, AttributeModifier.Operation.MULTIPLY_BASE));
+        this.getAttributeInstance(EntityAttributes.GENERIC_FOLLOW_RANGE).addPersistentModifier(new EntityAttributeModifier(
+                "Random spawn bonus",
+                this.random.nextGaussian() * 0.05D,
+                EntityAttributeModifier.Operation.MULTIPLY_BASE
+        ));
         this.setLeftHanded(this.random.nextFloat() < 0.05F);
-        if (compound != null && compound.contains(DragonLifeStage.DATA_PARAMETER_KEY))
-            this.setLifeStage(DragonLifeStage.byName(compound.getString(DragonLifeStage.DATA_PARAMETER_KEY)), true, false);
-        else this.setLifeStage(DragonLifeStage.ADULT, true, false);
-        return spawnData;
-    }*/
+        this.setLifeStage(tag != null && tag.contains(DragonLifeStage.DATA_PARAMETER_KEY)
+                        ? DragonLifeStage.byName(tag.getString(DragonLifeStage.DATA_PARAMETER_KEY))
+                        : DragonLifeStage.ADULT,
+                true, false
+        );
+        return data;
+    }
 
     public final PacketByteBuf writeId(PacketByteBuf buffer) {
         return buffer.writeVarInt(this.getEntityId());

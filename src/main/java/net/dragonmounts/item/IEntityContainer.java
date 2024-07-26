@@ -9,6 +9,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
 public interface IEntityContainer<T extends Entity> {
     static NbtCompound simplifyData(NbtCompound tag) {
@@ -35,20 +36,21 @@ public interface IEntityContainer<T extends Entity> {
         return tag;
     }
 
-    Entity spwanEntity(
+    @Nullable
+    Entity loadEntity(
             ServerWorld world,
-            PlayerEntity player,
+            @Nullable PlayerEntity player,
             NbtCompound tag,
             BlockPos pos,
             SpawnReason reason,
-            EntityData data,
+            @Nullable EntityData data,
             boolean yOffset,
             boolean extraOffset
     );
 
     ItemStack saveEntity(T entity);
 
-    boolean isEmpty(NbtCompound tag);
+    boolean isEmpty(@Nullable NbtCompound tag);
 
     default boolean canSetNbt(MinecraftServer server, Entity entity, PlayerEntity player) {
         return !entity.entityDataRequiresOperator() || player != null && server.getPlayerManager().isOperator(player.getGameProfile());

@@ -61,13 +61,17 @@ public class FreeCommand {
                 cache = entity;
             }
         }
-        if (flag)
-            if (targets.size() == 1)
+        if (flag) {
+            if (targets.size() == 1) {
                 source.sendError(createClassCastException(targets.iterator().next(), TameableEntity.class));
-            else source.sendError(new TranslatableText("commands.dragonmounts.free.multiple", count));
-        else if (count == 1)
+            } else {
+                source.sendError(new TranslatableText("commands.dragonmounts.free.multiple", count));
+            }
+        } else if (count == 1) {
             source.sendFeedback(new TranslatableText("commands.dragonmounts.free.single", cache.getDisplayName()), true);
-        else source.sendFeedback(new TranslatableText("commands.dragonmounts.free.multiple", count), true);
+        } else {
+            source.sendFeedback(new TranslatableText("commands.dragonmounts.free.multiple", count), true);
+        }
         return count;
     }
 }

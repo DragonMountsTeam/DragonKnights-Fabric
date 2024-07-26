@@ -15,18 +15,16 @@ public class DragonHeadBlockEntity extends BlockEntity implements Tickable {
     private int ticks;
     private boolean active;
 
+    @SuppressWarnings("AssignmentUsedAsCondition")
     @Override
     public void tick() {
         //noinspection DataFlowIssue
-        if (this.world.isReceivingRedstonePower(this.pos)) {
-            this.active = true;
+        if (this.active /*--> */ = /* <--*/ this.world.isReceivingRedstonePower(this.pos)) {
             ++this.ticks;
-        } else {
-            this.active = false;
         }
     }
 
     public float getAnimation(float partialTicks) {
-        return this.active ? (float) this.ticks + partialTicks : (float) this.ticks;
+        return this.active ? partialTicks + (float) this.ticks : (float) this.ticks;
     }
 }

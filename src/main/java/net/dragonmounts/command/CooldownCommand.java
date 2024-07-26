@@ -16,6 +16,7 @@ import java.util.Collection;
 
 import static net.dragonmounts.command.DMCommand.HAS_PERMISSION_LEVEL_3;
 
+@SuppressWarnings("WrongTypeInTranslationArgs")
 public class CooldownCommand {
     public static ArgumentBuilder<ServerCommandSource, ?> register() {
         RequiredArgumentBuilder<ServerCommandSource, EntitySelector> single = CommandManager.argument("player", EntityArgumentType.player());
@@ -42,20 +43,18 @@ public class CooldownCommand {
     }
 
     public static int get(ServerCommandSource source, Collection<ServerPlayerEntity> players, CooldownCategory category) {
-        int sum = 0;
+        if (players.isEmpty()) {
+            source.sendError(new TranslatableText("commands.dragonmounts.cooldown.get.failure"));
+            return 0;
+        }
         for (ServerPlayerEntity player : players) {
             source.sendFeedback(new TranslatableText("commands.dragonmounts.cooldown.get.success",
                     player.getDisplayName(),
                     category.identifier,
                     ((Provider) player).dragonmounts$getManager().getCooldown(category)
             ), true);
-            ++sum;
         }
-        if (sum == 0) {
-            source.sendError(new TranslatableText("commands.dragonmounts.cooldown.get.failure"));
-            return 0;
-        }
-        return sum;
+        return players.size();
     }
 
     public static int set(ServerCommandSource source, ServerPlayerEntity player, CooldownCategory category, int value) {
@@ -65,16 +64,15 @@ public class CooldownCommand {
     }
 
     public static int set(ServerCommandSource source, Collection<ServerPlayerEntity> players, CooldownCategory category, int value) {
-        int sum = 0;
-        for (ServerPlayerEntity player : players) {
-            ((Provider) player).dragonmounts$getManager().setCooldown(category, value);
-            ++sum;
-        }
-        if (sum == 0) {
+        if (players.isEmpty()) {
             source.sendError(new TranslatableText("commands.dragonmounts.cooldown.set.failure"));
             return 0;
         }
-        source.sendFeedback(new TranslatableText("commands.dragonmounts.cooldown.set.multiple", source, category.identifier, value), true);
-        return sum;
+        for (ServerPlayerEntity player : players) {
+            ((Provider) player).dragonmounts$getManager().setCooldown(category, value);
+        }
+        int size = players.size();
+        source.sendFeedback(new TranslatableText("commands.dragonmounts.cooldown.set.multiple", size, category.identifier, value), true);
+        return size;
     }
 }

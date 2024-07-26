@@ -28,12 +28,19 @@ public class DragonCoreScreen extends HandledScreen<DragonCoreScreenHandler> {
     }
 
     @Override
-    protected void drawBackground(MatrixStack matrixStack, float ticks, int x, int y) {
+    protected void drawBackground(MatrixStack matrices, float ticks, int x, int y) {
         //noinspection DataFlowIssue
         this.client.getTextureManager().bindTexture(TEXTURE_LOCATION);
+        //noinspection deprecation
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int i = (this.width - this.backgroundWidth) / 2;
-        int j = (this.height - this.backgroundHeight) / 2;
-        this.drawTexture(matrixStack, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        this.drawTexture(
+                matrices,
+                (this.width - this.backgroundWidth) >> 1,
+                (this.height - this.backgroundHeight) >> 1,
+                0,
+                0,
+                this.backgroundWidth,
+                this.backgroundHeight
+        );
     }
 }
