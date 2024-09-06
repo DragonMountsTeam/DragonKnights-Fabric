@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dragon_scales": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonmounts:zombie_dragon_scales"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dragonmounts:zombie_dragon_scale_chestplate"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_dragon_scales"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dragonmounts:zombie_dragon_scale_chestplate"
+    ]
+  }
+}

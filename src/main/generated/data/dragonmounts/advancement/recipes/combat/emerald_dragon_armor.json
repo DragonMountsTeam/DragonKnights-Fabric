@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:storage_blocks/emerald"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:gems/emerald"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dragonmounts:emerald_dragon_armor"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot",
+      "has_block"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dragonmounts:emerald_dragon_armor"
+    ]
+  }
+}

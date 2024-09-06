@@ -1,0 +1,6 @@
+{
+  "parent": "dragonmounts:item/template_shield_blocking",
+  "textures": {
+    "base": "dragonmounts:item/dragon_scale_shield/fire"
+  }
+}

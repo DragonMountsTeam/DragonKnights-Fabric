@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "dragonmounts:item/armor/nether/nether_dragon_scale_helmet"
+  }
+}
+

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/dragon_egg",
+  "textures": {
+    "all": "dragonmounts:block/dragon_egg/sunlight",
+    "particle": "#all"
+  }
+}

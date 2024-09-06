@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "W": {
+      "item": "dragonmounts:enchant_dragon_scales"
+    },
+    "X": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "WXW",
+    "WWW",
+    " W "
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonmounts:enchant_dragon_scale_shield"
+  }
+}

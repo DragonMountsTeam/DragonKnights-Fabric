@@ -1,0 +1,14 @@
+{
+  "parent": "dragonmounts:item/template_shield",
+  "textures": {
+    "base": "dragonmounts:item/dragon_scale_shield/aether"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "minecraft:blocking": 1.0
+      },
+      "model": "dragonmounts:item/aether_dragon_scale_shield_blocking"
+    }
+  ]
+}

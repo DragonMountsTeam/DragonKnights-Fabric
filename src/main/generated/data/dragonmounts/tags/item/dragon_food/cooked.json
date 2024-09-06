@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "#c:foods/cooked_meat",
+      "required": false
+    },
+    {
+      "id": "#c:foods/cooked_fish",
+      "required": false
+    }
+  ]
+}

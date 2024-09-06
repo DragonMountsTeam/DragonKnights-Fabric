@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "tag": "c:rods/wooden"
+    },
+    "X": {
+      "item": "dragonmounts:sculk_dragon_scales"
+    }
+  },
+  "pattern": [
+    "X",
+    "#",
+    "#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonmounts:sculk_dragon_shovel"
+  }
+}

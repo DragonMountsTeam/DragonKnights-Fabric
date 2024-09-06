@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "dragonmounts",
+  "version": "${version}",
+  "name": "Dragon Mounts 3",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": [
+    "MIT"
+  ],
+  "icon": "logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "net.dragonmounts.client.DragonMountsClient"
+    ],
+    "main": [
+      "net.dragonmounts.DragonMounts"
+    ],
+    "fabric-datagen": [
+      "net.dragonmounts.data.DMDataGenerator"
+    ]
+  },
+  "mixins": [
+    "dragonmounts.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

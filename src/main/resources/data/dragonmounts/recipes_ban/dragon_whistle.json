@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "P#",
+    "#X"
+  ],
+  "key": {
+    "P": {
+      "tag": "forge:rods/wooden"
+    },
+    "#": {
+      "tag": "forge:ender_pearls"
+    },
+    "X": {
+      "tag": "forge:string"
+    }
+  },
+  "result": {
+    "item": "dragonmounts:dragon_whistle"
+  }
+}

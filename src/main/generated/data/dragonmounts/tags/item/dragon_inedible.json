@@ -1,0 +1,10 @@
+{
+  "values": [
+    {
+      "id": "#c:foods/food_poisoning",
+      "required": false
+    },
+    "minecraft:axolotl_bucket",
+    "minecraft:pufferfish_bucket"
+  ]
+}

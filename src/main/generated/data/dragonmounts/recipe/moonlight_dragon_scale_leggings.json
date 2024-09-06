@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "X": {
+      "item": "dragonmounts:moonlight_dragon_scales"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "X X",
+    "X X"
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonmounts:moonlight_dragon_scale_leggings"
+  }
+}

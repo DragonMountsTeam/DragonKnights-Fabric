@@ -1,0 +1,19 @@
+{
+  "replace": false,
+  "values": [
+    "dragonmounts:aether_dragon_scale_bow",
+    "dragonmounts:enchant_dragon_scale_bow",
+    "dragonmounts:ender_dragon_scale_bow",
+    "dragonmounts:fire_dragon_scale_bow",
+    "dragonmounts:forest_dragon_scale_bow",
+    "dragonmounts:ice_dragon_scale_bow",
+    "dragonmounts:moonlight_dragon_scale_bow",
+    "dragonmounts:nether_dragon_scale_bow",
+    "dragonmounts:sculk_dragon_scale_bow",
+    "dragonmounts:storm_dragon_scale_bow",
+    "dragonmounts:sunlight_dragon_scale_bow",
+    "dragonmounts:terra_dragon_scale_bow",
+    "dragonmounts:water_dragon_scale_bow",
+    "dragonmounts:zombie_dragon_scale_bow"
+  ]
+}

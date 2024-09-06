@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X X",
+    "###"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:oak_planks"
+    },
+    "#": {
+      "tag": "forge:leather"
+    }
+  },
+  "result": {
+    "item": "dragonmounts:oak_carriage"
+  }
+}

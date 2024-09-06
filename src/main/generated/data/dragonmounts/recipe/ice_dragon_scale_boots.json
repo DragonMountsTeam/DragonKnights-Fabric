@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "X": {
+      "item": "dragonmounts:ice_dragon_scales"
+    }
+  },
+  "pattern": [
+    "X X",
+    "X X"
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonmounts:ice_dragon_scale_boots"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "dragonmounts:golden_dragon_armor"
+  },
+  "result": {
+    "id": "minecraft:gold_ingot"
+  }
+}

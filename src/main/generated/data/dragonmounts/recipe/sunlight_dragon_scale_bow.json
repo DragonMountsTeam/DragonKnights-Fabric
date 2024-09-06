@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "dragonmounts:sunlight_dragon_scales"
+    },
+    "X": {
+      "tag": "c:strings"
+    }
+  },
+  "pattern": [
+    " #X",
+    "# X",
+    " #X"
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonmounts:sunlight_dragon_scale_bow"
+  }
+}

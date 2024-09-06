@@ -1,0 +1,10 @@
+accessWidener v2 named
+accessible class net/minecraft/client/OptionInstance$SliderableValueSet
+accessible class net/minecraft/client/renderer/RenderType$CompositeState
+accessible class net/minecraft/world/scores/PlayerScores
+accessible field net/minecraft/world/effect/MobEffectInstance duration I
+accessible field net/minecraft/world/effect/MobEffectInstance hiddenEffect Lnet/minecraft/world/effect/MobEffectInstance;
+accessible method net/minecraft/data/models/model/TexturedModel <init> (Lnet/minecraft/data/models/model/TextureMapping;Lnet/minecraft/data/models/model/ModelTemplate;)V
+accessible method net/minecraft/world/scores/PlayerScores listRawScores ()Ljava/util/Map;
+accessible method net/minecraft/world/level/BaseSpawner getOrCreateNextSpawnData (Lnet/minecraft/world/level/Level;Lnet/minecraft/util/RandomSource;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/SpawnData;
+accessible method net/minecraft/world/level/block/entity/trialspawner/TrialSpawnerData getOrCreateNextSpawnData (Lnet/minecraft/world/level/block/entity/trialspawner/TrialSpawner;Lnet/minecraft/util/RandomSource;)Lnet/minecraft/world/level/SpawnData;

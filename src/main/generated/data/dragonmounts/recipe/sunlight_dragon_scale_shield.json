@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "W": {
+      "item": "dragonmounts:sunlight_dragon_scales"
+    },
+    "X": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "WXW",
+    "WWW",
+    " W "
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonmounts:sunlight_dragon_scale_shield"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "dragonmounts:iron_dragon_armor"
+  },
+  "result": {
+    "id": "minecraft:iron_ingot"
+  }
+}

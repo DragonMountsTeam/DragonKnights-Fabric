@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "base": {
+    "item": "dragonmounts:diamond_dragon_armor"
+  },
+  "result": {
+    "count": 1,
+    "id": "dragonmounts:netherite_dragon_armor"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  }
+}

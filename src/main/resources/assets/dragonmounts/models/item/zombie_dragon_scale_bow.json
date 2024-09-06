@@ -1,0 +1,28 @@
+{
+  "parent": "minecraft:item/bow",
+  "textures": {
+    "layer0": "dragonmounts:item/bow/zombie_dragon_scale_bow"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "minecraft:pulling": 1.0
+      },
+      "model": "dragonmounts:item/zombie_dragon_scale_bow_0"
+    },
+    {
+      "predicate": {
+        "minecraft:pulling": 1.0,
+        "minecraft:pull": 0.65
+      },
+      "model": "dragonmounts:item/zombie_dragon_scale_bow_1"
+    },
+    {
+      "predicate": {
+        "minecraft:pulling": 1.0,
+        "minecraft:pull": 0.9
+      },
+      "model": "dragonmounts:item/zombie_dragon_scale_bow_2"
+    }
+  ]
+}

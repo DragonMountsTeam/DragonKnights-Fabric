@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/bow",
+  "textures": {
+    "layer0": "dragonmounts:item/bow/aether_dragon_scale_bow_0"
+  }
+}

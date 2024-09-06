@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "tag": "c:rods/wooden"
+    },
+    "X": {
+      "item": "dragonmounts:storm_dragon_scales"
+    }
+  },
+  "pattern": [
+    "XX",
+    " #",
+    " #"
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonmounts:storm_dragon_hoe"
+  }
+}

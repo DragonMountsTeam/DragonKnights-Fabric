@@ -1,0 +1,19 @@
+{
+  "replace": false,
+  "values": [
+    "dragonmounts:aether_dragon_scales",
+    "dragonmounts:enchant_dragon_scales",
+    "dragonmounts:ender_dragon_scales",
+    "dragonmounts:fire_dragon_scales",
+    "dragonmounts:forest_dragon_scales",
+    "dragonmounts:ice_dragon_scales",
+    "dragonmounts:moonlight_dragon_scales",
+    "dragonmounts:nether_dragon_scales",
+    "dragonmounts:sculk_dragon_scales",
+    "dragonmounts:storm_dragon_scales",
+    "dragonmounts:sunlight_dragon_scales",
+    "dragonmounts:terra_dragon_scales",
+    "dragonmounts:water_dragon_scales",
+    "dragonmounts:zombie_dragon_scales"
+  ]
+}

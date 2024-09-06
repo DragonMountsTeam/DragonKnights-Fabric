@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "dragonmounts:item/tools/shovel/zombie_dragon_shovel"
+  }
+}

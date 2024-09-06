@@ -1,0 +1,25 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.dragonmounts.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "DragonEggBlockMixin",
+    "EnchantmentHelperMixin",
+    "ItemEntityMixin",
+    "ItemStackMixin",
+    "PlayerEntityMixin",
+    "PlayerManagerMixin",
+    "ScoreboardMixin"
+  ],
+  "client": [
+    "CameraMixin",
+    "ChatScreenMixin",
+    "ClientPacketListenerMixin",
+    "CustomHeadLayerMixin",
+    "GuiGraphicsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
