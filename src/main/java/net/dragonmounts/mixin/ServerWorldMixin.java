@@ -26,4 +26,6 @@ public abstract class ServerWorldMixin {
         }
         scoreboard.resetEntityScore(entity);
     }
+
+    private ServerWorldMixin() {}
 }

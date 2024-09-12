@@ -5,7 +5,6 @@ import net.dragonmounts.api.IArmorEffectSource;
 import net.dragonmounts.registry.CooldownCategory;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -332,14 +331,6 @@ public final class ArmorEffectManager implements IArmorEffectManager {
         return 0;
     }
 
-    private void checkSlot(final PlayerEntity player, final EquipmentSlot slot) {
-        final ItemStack stack = player.getEquippedStack(slot);
-        final Item item = stack.getItem();
-        if (item instanceof IArmorEffectSource) {
-            ((IArmorEffectSource) item).affect(this, player, stack);
-        }
-    }
-
     @Override
     public void tick() {
         final int[] cdRef = this.cdRef, cdDat = this.cdDat, lvlDat = this.lvlDat;
@@ -351,10 +342,12 @@ public final class ArmorEffectManager implements IArmorEffectManager {
             }
         }
         int sum = this.activeN = this.lvlN = 0;
-        this.checkSlot(player, EquipmentSlot.HEAD);
-        this.checkSlot(player, EquipmentSlot.CHEST);
-        this.checkSlot(player, EquipmentSlot.LEGS);
-        this.checkSlot(player, EquipmentSlot.FEET);
+        for (ItemStack stack : player.getArmorItems()) {
+            Item item = stack.getItem();
+            if (item instanceof IArmorEffectSource) {
+                ((IArmorEffectSource) item).affect(this, player, stack);
+            }
+        }
         final IArmorEffect[] lvlKey = this.lvlKey;
         int[] lvlRef = this.lvlRef;
         for (int i = 0, end = this.lvlN; i < end; ++i) {

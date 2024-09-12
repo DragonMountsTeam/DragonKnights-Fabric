@@ -14,13 +14,15 @@ import net.minecraft.text.TranslatableText;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.function.Predicate;
 
-import static net.dragonmounts.command.DMCommand.*;
+import static net.dragonmounts.command.DMCommand.createClassCastException;
+import static net.dragonmounts.command.DMCommand.getSingleProfileOrException;
 
 public class FreeCommand {
-    public static ArgumentBuilder<ServerCommandSource, ?> register() {
+    public static ArgumentBuilder<ServerCommandSource, ?> register(Predicate<ServerCommandSource> permission) {
         return CommandManager.literal("free")
-                .requires(HAS_PERMISSION_LEVEL_3)
+                .requires(permission)
                 .then(CommandManager.argument("targets", EntityArgumentType.entities())
                         .executes(context -> free(context, EntityArgumentType.getEntities(context, "targets")))
                         .then(CommandManager.argument("owner", GameProfileArgumentType.gameProfile())
@@ -62,11 +64,10 @@ public class FreeCommand {
             }
         }
         if (flag) {
-            if (targets.size() == 1) {
-                source.sendError(createClassCastException(targets.iterator().next(), TameableEntity.class));
-            } else {
-                source.sendError(new TranslatableText("commands.dragonmounts.free.multiple", count));
-            }
+            source.sendError(targets.size() == 1
+                    ? createClassCastException(targets.iterator().next(), TameableEntity.class)
+                    : new TranslatableText("commands.dragonmounts.free.multiple", count)
+            );
         } else if (count == 1) {
             source.sendFeedback(new TranslatableText("commands.dragonmounts.free.single", cache.getDisplayName()), true);
         } else {

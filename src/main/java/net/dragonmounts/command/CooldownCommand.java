@@ -13,24 +13,24 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.TranslatableText;
 
 import java.util.Collection;
-
-import static net.dragonmounts.command.DMCommand.HAS_PERMISSION_LEVEL_3;
+import java.util.function.Predicate;
 
 @SuppressWarnings("WrongTypeInTranslationArgs")
 public class CooldownCommand {
-    public static ArgumentBuilder<ServerCommandSource, ?> register() {
+    public static ArgumentBuilder<ServerCommandSource, ?> register(Predicate<ServerCommandSource> permission) {
         RequiredArgumentBuilder<ServerCommandSource, EntitySelector> single = CommandManager.argument("player", EntityArgumentType.player());
         RequiredArgumentBuilder<ServerCommandSource, EntitySelector> multiple = CommandManager.argument("players", EntityArgumentType.players());
+        IntegerArgumentType intArg = IntegerArgumentType.integer(0);
         for (CooldownCategory category : CooldownCategory.REGISTRY) {
             final String identifier = category.identifier.toString();
             single.then(CommandManager.literal(identifier).executes(context -> get(context.getSource(), EntityArgumentType.getPlayer(context, "player"), category))
-                    .then(CommandManager.argument("value", IntegerArgumentType.integer(0)).executes(context -> set(context.getSource(), EntityArgumentType.getPlayer(context, "player"), category, IntegerArgumentType.getInteger(context, "value"))))
+                    .then(CommandManager.argument("value", intArg).executes(context -> set(context.getSource(), EntityArgumentType.getPlayer(context, "player"), category, IntegerArgumentType.getInteger(context, "value"))))
             );
             multiple.then(CommandManager.literal(identifier).executes(context -> get(context.getSource(), EntityArgumentType.getPlayers(context, "players"), category))
-                    .then(CommandManager.argument("value", IntegerArgumentType.integer(0)).executes(context -> set(context.getSource(), EntityArgumentType.getPlayers(context, "players"), category, IntegerArgumentType.getInteger(context, "value"))))
+                    .then(CommandManager.argument("value", intArg).executes(context -> set(context.getSource(), EntityArgumentType.getPlayers(context, "players"), category, IntegerArgumentType.getInteger(context, "value"))))
             );
         }
-        return CommandManager.literal("cooldown").requires(HAS_PERMISSION_LEVEL_3).then(single).then(multiple);
+        return CommandManager.literal("cooldown").requires(permission).then(single).then(multiple);
     }
 
     public static int get(ServerCommandSource source, ServerPlayerEntity player, CooldownCategory category) {

@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static net.dragonmounts.util.TimeUtil.formatAsFloat;
+import static net.dragonmounts.util.TimeUtil.stringifyTick;
 import static net.minecraft.util.Util.createTranslationKey;
 
 public interface IDragonScaleArmorEffect extends IArmorEffect {
@@ -44,9 +44,9 @@ public interface IDragonScaleArmorEffect extends IArmorEffect {
         public static void appendCooldownInfo(List<Text> tooltips, Advanced effect) {
             int value = ArmorEffectManager.getLocalCooldown(effect);
             if (value > 0) {
-                tooltips.add(new TranslatableText("tooltip.dragonmounts.armor_effect_remaining_cooldown", formatAsFloat(value)));
+                tooltips.add(new TranslatableText("tooltip.dragonmounts.armor_effect_remaining_cooldown", stringifyTick(value)));
             } else if (effect.cooldown > 0) {
-                tooltips.add(new TranslatableText("tooltip.dragonmounts.armor_effect_cooldown", formatAsFloat(effect.cooldown)));
+                tooltips.add(new TranslatableText("tooltip.dragonmounts.armor_effect_cooldown", stringifyTick(effect.cooldown)));
             }
         }
 

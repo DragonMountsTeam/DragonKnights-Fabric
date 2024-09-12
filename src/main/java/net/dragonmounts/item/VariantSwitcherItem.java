@@ -2,6 +2,7 @@ package net.dragonmounts.item;
 
 import net.dragonmounts.block.AbstractDragonHeadBlock;
 import net.dragonmounts.entity.dragon.TameableDragonEntity;
+import net.dragonmounts.init.DMSounds;
 import net.dragonmounts.init.DragonVariants;
 import net.dragonmounts.registry.DragonVariant;
 import net.minecraft.block.Block;
@@ -12,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -21,7 +23,6 @@ import net.minecraft.world.World;
 
 import static net.minecraft.state.property.Properties.HORIZONTAL_FACING;
 import static net.minecraft.state.property.Properties.ROTATION;
-
 
 public class VariantSwitcherItem extends Item {
     private static DragonVariant draw(DragonVariant variant) {
@@ -35,10 +36,12 @@ public class VariantSwitcherItem extends Item {
     @Override
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand) {
         if (entity instanceof TameableDragonEntity) {
-            if (player.world.isClient) return ActionResult.SUCCESS;
+            World level = entity.world;
+            if (level.isClient) return ActionResult.SUCCESS;
             TameableDragonEntity dragon = (TameableDragonEntity) entity;
             if (dragon.isOwner(player)) {
                 dragon.setVariant(draw(dragon.getVariant()));
+                level.playSoundFromEntity(player, dragon, DMSounds.VARIANT_SWITCHER, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 if (!player.abilities.creativeMode) {
                     stack.decrement(1);
                 }

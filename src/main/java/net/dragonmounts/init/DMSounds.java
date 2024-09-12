@@ -22,6 +22,7 @@ public class DMSounds {
     public static final SoundEvent DRAGON_WHISTLE = create("item.whistle");
     public static final SoundEvent DRAGON_ROAR = create("mob.dragon.roar");
     public static final SoundEvent HATCHLING_DRAGON_ROAR = create("mob.dragon.hatchlingroar");
+    public static final SoundEvent VARIANT_SWITCHER = create("item.variant_switcher");
 
     private static SoundEvent create(final String name) {
         Identifier identifier = new Identifier(MOD_ID, name);

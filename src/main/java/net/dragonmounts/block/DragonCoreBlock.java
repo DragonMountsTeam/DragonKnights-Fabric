@@ -1,12 +1,15 @@
 package net.dragonmounts.block;
 
 import net.dragonmounts.block.entity.DragonCoreBlockEntity;
+import net.dragonmounts.util.BlockUtil;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity.AnimationStage;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.ShulkerLidCollisions;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -34,6 +37,20 @@ import static net.minecraft.state.property.Properties.HORIZONTAL_FACING;
  * @see ShulkerBoxBlock
  */
 public class DragonCoreBlock extends BlockWithEntity {
+    public static boolean tryPlaceAt(World level, BlockPos pos, BlockState core, ItemStack stack) {
+        BlockState state = level.getBlockState(pos);
+        if ((state.canBucketPlace(Fluids.EMPTY) || state.getPistonBehavior() != PistonBehavior.BLOCK) && (BlockUtil.isAir(state) || level.breakBlock(pos, true))) {
+            if (level.setBlockState(pos, core, 2)) {
+                BlockEntity entity = level.getBlockEntity(pos);
+                if (entity instanceof DragonCoreBlockEntity) {
+                    ((DragonCoreBlockEntity) entity).setStack(0, stack);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
     public DragonCoreBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.stateManager.getDefaultState().with(HORIZONTAL_FACING, Direction.NORTH));
@@ -99,8 +116,8 @@ public class DragonCoreBlock extends BlockWithEntity {
 
     @Override
     @SuppressWarnings("deprecation")
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        BlockEntity entity = world.getBlockEntity(pos);
+    public VoxelShape getOutlineShape(BlockState state, BlockView level, BlockPos pos, ShapeContext context) {
+        BlockEntity entity = level.getBlockEntity(pos);
         return entity instanceof DragonCoreBlockEntity ? VoxelShapes.cuboid(((DragonCoreBlockEntity) entity).getBoundingBox()) : VoxelShapes.fullCube();
     }
 
@@ -112,8 +129,8 @@ public class DragonCoreBlock extends BlockWithEntity {
 
     @Override
     @SuppressWarnings("deprecation")
-    public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-        return ScreenHandler.calculateComparatorOutput((Inventory) world.getBlockEntity(pos));
+    public int getComparatorOutput(BlockState state, World level, BlockPos pos) {
+        return ScreenHandler.calculateComparatorOutput((Inventory) level.getBlockEntity(pos));
     }
 
     @Override

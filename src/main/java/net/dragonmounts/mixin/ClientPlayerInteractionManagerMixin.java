@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerInteractionManager.class)
-public class ClientPlayerInteractionManagerMixin {
+public abstract class ClientPlayerInteractionManagerMixin {
     @Final
     @Shadow
     private MinecraftClient client;
@@ -24,4 +24,6 @@ public class ClientPlayerInteractionManagerMixin {
             info.setReturnValue(info.getReturnValueZ() || this.client.player.getVehicle() instanceof TameableDragonEntity);
         }
     }
+
+    private ClientPlayerInteractionManagerMixin() {}
 }

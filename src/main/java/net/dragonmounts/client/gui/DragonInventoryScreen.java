@@ -2,6 +2,7 @@ package net.dragonmounts.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.dragonmounts.client.ClientDragonEntity;
+import net.dragonmounts.client.DragonRendererContext;
 import net.dragonmounts.inventory.DragonInventoryScreenHandler;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -44,8 +45,9 @@ public class DragonInventoryScreen extends AbstractInventoryScreen<DragonInvento
         if (dragon.hasChest()) {
             this.drawTexture(matrices, left + 7, top + 75, 7, 141, 162, 54);
         }
-        dragon.renderCrystalBeams = false;// to disable crystal beam
+        final DragonRendererContext context = dragon.context;
+        context.isInGUI = true;
         InventoryScreen.drawEntity(left + 60, top + 62, 5, left - x + 60F, top - y + 13F, dragon);
-        dragon.renderCrystalBeams = true;
+        context.isInGUI = false;
     }
 }

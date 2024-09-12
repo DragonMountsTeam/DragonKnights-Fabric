@@ -15,4 +15,6 @@ public abstract class PlayerManagerMixin {
     public void sendInitPacket(ClientConnection connection, ServerPlayerEntity player, CallbackInfo info) {
         ((Provider) player).dragonmounts$getManager().sendInitPacket();
     }
+
+    private PlayerManagerMixin() {}
 }

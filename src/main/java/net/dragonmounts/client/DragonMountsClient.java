@@ -14,7 +14,6 @@ import net.dragonmounts.item.DragonScaleShieldItem;
 import net.dragonmounts.item.DragonSpawnEggItem;
 import net.dragonmounts.network.ClientHandler;
 import net.dragonmounts.registry.DragonType;
-import net.dragonmounts.registry.DragonVariant;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -70,9 +69,7 @@ public class DragonMountsClient implements ClientModInitializer {
         BlockEntityRendererRegistry.INSTANCE.register(DMBlockEntities.DRAGON_CORE, DragonCoreRenderer::new);
         BlockEntityRendererRegistry.INSTANCE.register(DMBlockEntities.DRAGON_HEAD, DragonHeadRenderer::new);
         BuiltinItemRendererRegistry.INSTANCE.register(DMBlocks.DRAGON_CORE, DragonCoreRenderer.ITEM_RENDERER);
-        for (DragonVariant variant : DragonVariants.VALUES) {
-            BuiltinItemRendererRegistry.INSTANCE.register(variant.headItem, DragonHeadRenderer.ITEM_RENDERER);
-        }
+        DragonVariants.BUILTIN_VALUES.forEach(variant -> BuiltinItemRendererRegistry.INSTANCE.register(variant.headItem, DragonHeadRenderer.ITEM_RENDERER));
         EntityRendererRegistry.INSTANCE.register(DMEntities.HATCHABLE_DRAGON_EGG, (dispatcher, $) -> new DragonEggRenderer(dispatcher));
         EntityRendererRegistry.INSTANCE.register(DMEntities.TAMEABLE_DRAGON, (dispatcher, $) -> new TameableDragonRenderer(dispatcher));
         registerPacketHandler();

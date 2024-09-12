@@ -228,8 +228,7 @@ public abstract class TameableDragonEntity extends TameableEntity implements Ent
         return this.chest;
     }
 
-    public void inventoryChanged() {
-    }
+    public void inventoryChanged() {}
 
     public final DragonVariant getVariant() {
         return this.dataTracker.get(DATA_DRAGON_VARIANT);
@@ -440,7 +439,7 @@ public abstract class TameableDragonEntity extends TameableEntity implements Ent
     public void updatePassengerPosition(Entity passenger) {
         int index = this.getPassengerList().indexOf(passenger);
         if (index >= 0) {
-            Vec3d pos = this.getDragonType().passengerOffset.get(index, this.isInSittingPose())
+            Vec3d pos = this.getDragonType().passengerLocator.locate(index, this.isInSittingPose())
                     .multiply(this.getScaleFactor())
                     .rotateY(MathUtil.TO_RAD_FACTOR * -this.bodyYaw)
                     .add(this.getPos());
@@ -454,7 +453,7 @@ public abstract class TameableDragonEntity extends TameableEntity implements Ent
 
     @Override
     public double getHeightOffset() {
-        return this.getDragonType().passengerOffset.get(0, this.isInSittingPose()).y * this.getScaleFactor();
+        return this.getDragonType().passengerLocator.locate(0, this.isInSittingPose()).y * this.getScaleFactor();
     }
 
     @Override

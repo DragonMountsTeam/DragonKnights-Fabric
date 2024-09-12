@@ -13,14 +13,15 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 
-import static net.dragonmounts.command.DMCommand.HAS_PERMISSION_LEVEL_3;
+import java.util.function.Predicate;
+
 import static net.dragonmounts.command.DMCommand.createClassCastException;
 import static net.dragonmounts.entity.dragon.DragonLifeStage.EGG_TRANSLATION_KEY;
 import static net.dragonmounts.entity.dragon.TameableDragonEntity.AGE_DATA_PARAMETER_KEY;
 
 public class StageCommand {
-    public static ArgumentBuilder<ServerCommandSource, ?> register() {
-        return CommandManager.literal("stage").requires(HAS_PERMISSION_LEVEL_3).then(
+    public static ArgumentBuilder<ServerCommandSource, ?> register(Predicate<ServerCommandSource> permission) {
+        return CommandManager.literal("stage").requires(permission).then(
                 DragonLifeStage.applyValues(CommandManager.argument("target", EntityArgumentType.entity()))
                         .executes(context -> get(context.getSource(), EntityArgumentType.getEntity(context, "target")))
         );

@@ -2,7 +2,6 @@ package net.dragonmounts.command;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -21,17 +20,18 @@ import java.util.function.Predicate;
 import static net.minecraft.text.HoverEvent.Action.SHOW_ENTITY;
 
 public class DMCommand {
-    public static final Predicate<ServerCommandSource> HAS_PERMISSION_LEVEL_3 = source -> source.hasPermissionLevel(3);
-
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
-        LiteralArgumentBuilder<ServerCommandSource> builder = CommandManager.literal("dragonmounts")
-                .then(ConfigCommand.register(dedicated))
-                .then(CooldownCommand.register())
-                .then(FreeCommand.register())
-                .then(StageCommand.register())
-                .then(TameCommand.register())
-                .then(TypeCommand.register());
-        dispatcher.register(builder);
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, boolean ignored) {
+        Predicate<ServerCommandSource> hasPermissionLevel2 = source -> source.hasPermissionLevel(2);
+        dispatcher.register(CommandManager.literal("dragonmounts")
+                .then(ConfigCommand.register(source -> source.hasPermissionLevel(3)))
+                .then(CooldownCommand.register(hasPermissionLevel2))
+                .then(FreeCommand.register(hasPermissionLevel2))
+                .then(RideCommand.register(hasPermissionLevel2))
+                .then(SaveCommand.register(hasPermissionLevel2))
+                .then(StageCommand.register(hasPermissionLevel2))
+                .then(TameCommand.register(hasPermissionLevel2))
+                .then(TypeCommand.register(hasPermissionLevel2))
+        );
     }
 
     public static Text createClassCastException(Class<?> from, Class<?> to) {

@@ -17,22 +17,22 @@ import net.minecraft.text.TranslatableText;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.function.Predicate;
 
-import static net.dragonmounts.command.DMCommand.*;
+import static net.dragonmounts.command.DMCommand.createClassCastException;
+import static net.dragonmounts.command.DMCommand.getSingleProfileOrException;
 
 public class TameCommand {
-    public static ArgumentBuilder<ServerCommandSource, ?> register() {
-        return CommandManager.literal("tame")
-                .requires(HAS_PERMISSION_LEVEL_3)
-                .then(CommandManager.argument("targets", EntityArgumentType.entities())
-                        .executes(context -> tame(context, EntityArgumentType.getEntities(context, "targets")))
-                        .then(CommandManager.argument("owner", GameProfileArgumentType.gameProfile())
-                                .executes(context -> tame(context, EntityArgumentType.getEntities(context, "targets"), getSingleProfileOrException(context, "owner")))
-                                .then(CommandManager.argument("forced", BoolArgumentType.bool()).executes(
-                                        context -> tame(context, BoolArgumentType.getBool(context, "forced"))
-                                ))
-                        ));
-
+    public static ArgumentBuilder<ServerCommandSource, ?> register(Predicate<ServerCommandSource> permission) {
+        return CommandManager.literal("tame").requires(permission).then(CommandManager.argument("targets", EntityArgumentType.entities())
+                .executes(context -> tame(context, EntityArgumentType.getEntities(context, "targets")))
+                .then(CommandManager.argument("owner", GameProfileArgumentType.gameProfile())
+                        .executes(context -> tame(context, EntityArgumentType.getEntities(context, "targets"), getSingleProfileOrException(context, "owner")))
+                        .then(CommandManager.argument("forced", BoolArgumentType.bool()).executes(
+                                context -> tame(context, BoolArgumentType.getBool(context, "forced"))
+                        ))
+                )
+        );
     }
 
     private static int tame(CommandContext<ServerCommandSource> context, Collection<? extends Entity> targets) throws CommandSyntaxException {
@@ -82,11 +82,10 @@ public class TameCommand {
             }
         }
         if (flag) {
-            if (targets.size() == 1) {
-                source.sendError(createClassCastException(targets.iterator().next(), TameableEntity.class));
-            } else {
-                source.sendError(new TranslatableText("commands.dragonmounts.tame.multiple", count, owner.getName()));
-            }
+            source.sendError(targets.size() == 1
+                    ? createClassCastException(targets.iterator().next(), TameableEntity.class)
+                    : new TranslatableText("commands.dragonmounts.tame.multiple", count, owner.getName())
+            );
         } else if (count == 1) {
             source.sendFeedback(new TranslatableText("commands.dragonmounts.tame.single", cache.getDisplayName(), owner.getName()), true);
         } else {

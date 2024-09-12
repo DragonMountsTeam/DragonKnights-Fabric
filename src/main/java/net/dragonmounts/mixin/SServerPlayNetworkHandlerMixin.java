@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayNetworkHandler.class)
-public class SServerPlayNetworkHandlerMixin {
+public abstract class SServerPlayNetworkHandlerMixin {
     @Shadow
     public ServerPlayerEntity player;
 
@@ -25,4 +25,6 @@ public class SServerPlayNetworkHandlerMixin {
             }
         }
     }
+
+    private SServerPlayNetworkHandlerMixin() {}
 }

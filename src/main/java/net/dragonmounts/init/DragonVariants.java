@@ -2,7 +2,7 @@ package net.dragonmounts.init;
 
 import net.dragonmounts.registry.DragonType;
 import net.dragonmounts.registry.DragonVariant;
-import net.dragonmounts.util.ImmutableArray;
+import net.dragonmounts.util.Values;
 import net.minecraft.block.AbstractBlock.Settings;
 
 import static net.dragonmounts.DragonMounts.MOD_ID;
@@ -47,45 +47,7 @@ public class DragonVariants {
     public static final DragonVariant WITHER_MALE = create(DragonTypes.WITHER, "wither_male");
     public static final DragonVariant ZOMBIE_FEMALE = create(DragonTypes.ZOMBIE, "zombie_female");
     public static final DragonVariant ZOMBIE_MALE = create(DragonTypes.ZOMBIE, "zombie_male");
-    public static final ImmutableArray<DragonVariant> VALUES = new ImmutableArray<>(
-            DragonVariant.class,
-            AETHER_FEMALE,
-            AETHER_MALE,
-            AETHER_NEW,
-            ENCHANT_FEMALE,
-            ENCHANT_MALE,
-            ENDER_FEMALE,
-            ENDER_MALE,
-            FIRE_FEMALE,
-            FIRE_MALE,
-            FOREST_DRY_FEMALE,
-            FOREST_DRY_MALE,
-            FOREST_TAIGA_FEMALE,
-            FOREST_TAIGA_MALE,
-            FOREST_FEMALE,
-            FOREST_MALE,
-            ICE_FEMALE,
-            ICE_MALE,
-            MOONLIGHT_FEMALE,
-            MOONLIGHT_MALE,
-            NETHER_FEMALE,
-            NETHER_MALE,
-            SCULK,
-            SKELETON_FEMALE,
-            SKELETON_MALE,
-            STORM_FEMALE,
-            STORM_MALE,
-            SUNLIGHT_FEMALE,
-            SUNLIGHT_MALE,
-            TERRA_FEMALE,
-            TERRA_MALE,
-            WATER_FEMALE,
-            WATER_MALE,
-            WITHER_FEMALE,
-            WITHER_MALE,
-            ZOMBIE_FEMALE,
-            ZOMBIE_MALE
-    );
+    public static final Values<DragonVariant> BUILTIN_VALUES = new Values<>(DragonVariants.class, DragonVariant.class);
 
     public static void init() {}
 

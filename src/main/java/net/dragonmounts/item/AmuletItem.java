@@ -2,10 +2,7 @@ package net.dragonmounts.item;
 
 import net.dragonmounts.entity.dragon.TameableDragonEntity;
 import net.minecraft.block.FluidBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -30,15 +27,18 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static net.dragonmounts.DragonMounts.ITEM_TRANSLATION_KEY_PREFIX;
+import static net.dragonmounts.entity.dragon.TameableDragonEntity.FLYING_DATA_PARAMETER_KEY;
 import static net.dragonmounts.util.EntityUtil.consume;
 import static net.dragonmounts.util.EntityUtil.finalizeSpawn;
 
 
 public class AmuletItem<T extends Entity> extends Item implements IEntityContainer<T> {
     private static final String TRANSLATION_KEY = ITEM_TRANSLATION_KEY_PREFIX + "dragon_amulet";
+    public final Class<T> contentType;
 
-    public AmuletItem(Settings props) {
+    public AmuletItem(Class<T> contentType, Settings props) {
         super(props.maxCount(1));
+        this.contentType = contentType;
     }
 
     @Nullable
@@ -71,12 +71,24 @@ public class AmuletItem<T extends Entity> extends Item implements IEntityContain
 
     @Override
     public ItemStack saveEntity(T entity) {
-        ItemStack stack = new ItemStack(this);
-        NbtCompound tag = new NbtCompound();
-        entity.removeAllPassengers();
-        entity.saveSelfNbt(tag);
-        stack.setTag(IEntityContainer.simplifyData(tag));
-        return stack;
+        EntityType<?> type = entity.getType();
+        if (type.isSaveable()) {
+            NbtCompound root = new NbtCompound();
+            NbtCompound tag = entity.writeNbt(new NbtCompound());
+            tag.putString("id", EntityType.getId(type).toString());
+            tag.remove(FLYING_DATA_PARAMETER_KEY);
+            tag.remove("UUID");
+            root.put("EntityTag", IEntityContainer.simplifyData(tag));
+            ItemStack stack = new ItemStack(this);
+            stack.setTag(root);
+            return stack;
+        }
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public final Class<T> getContentType() {
+        return this.contentType;
     }
 
     @Override

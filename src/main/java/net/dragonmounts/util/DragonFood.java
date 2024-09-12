@@ -40,12 +40,12 @@ public class DragonFood implements IDragonFood {
 
     public static final IDragonFood POISONOUS_POTATO = new IDragonFood() {
         @Override
-        public boolean isEatable(TameableDragonEntity dragon, PlayerEntity player, ItemStack stack, Hand hand) {
+        public boolean canFeed(TameableDragonEntity dragon, PlayerEntity player, ItemStack stack, Hand hand) {
             return dragon.isOwner(player);
         }
 
         @Override
-        public void eat(TameableDragonEntity dragon, PlayerEntity player, ItemStack stack, Hand hand) {
+        public void feed(TameableDragonEntity dragon, PlayerEntity player, ItemStack stack, Hand hand) {
             if (!dragon.isAgeLocked()) {
                 dragon.setAgeLocked(true);
             }
@@ -101,7 +101,7 @@ public class DragonFood implements IDragonFood {
     }
 
     @Override
-    public void eat(TameableDragonEntity dragon, PlayerEntity player, ItemStack stack, Hand hand) {
+    public void feed(TameableDragonEntity dragon, PlayerEntity player, ItemStack stack, Hand hand) {
         Item item = stack.getItem();
         if (this.age != 0) dragon.growUp(this.age, true);
         if (this.health != 0) dragon.setHealth(dragon.getHealth() + this.health);

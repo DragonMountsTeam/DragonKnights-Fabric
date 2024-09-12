@@ -1,6 +1,6 @@
 package net.dragonmounts.command;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -27,8 +27,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
 
 import java.util.Map;
+import java.util.function.Predicate;
 
-import static net.dragonmounts.command.DMCommand.HAS_PERMISSION_LEVEL_3;
 import static net.dragonmounts.command.DMCommand.createClassCastException;
 import static net.minecraft.state.property.Properties.HORIZONTAL_FACING;
 import static net.minecraft.state.property.Properties.ROTATION;
@@ -41,9 +41,9 @@ public class TypeCommand {
 
         protected abstract int getType(CommandContext<ServerCommandSource> context, A argument);
 
-        public <T> RequiredArgumentBuilder<ServerCommandSource, T> load(RequiredArgumentBuilder<ServerCommandSource, T> builder) {
+        public <T> RequiredArgumentBuilder<ServerCommandSource, T> load(RequiredArgumentBuilder<ServerCommandSource, T> builder, Predicate<ServerCommandSource> permission) {
             for (Map.Entry<RegistryKey<DragonType>, DragonType> entry : DragonType.REGISTRY.getEntries())
-                builder.then(CommandManager.literal(entry.getKey().getValue().toString()).executes(context -> this.setType(context, this.getArgument(context), entry.getValue())));
+                builder.then(CommandManager.literal(entry.getKey().getValue().toString()).requires(permission).executes(context -> this.setType(context, this.getArgument(context), entry.getValue())));
             builder.executes(context -> this.getType(context, this.getArgument(context)));
             return builder;
         }
@@ -60,10 +60,7 @@ public class TypeCommand {
             BlockState set(Block block, ServerWorld world, BlockPos pos, BlockState state, DragonType type);
         }
 
-        public static final Setter SETTER_DRAGON_EEG = (block, level, pos, state, type) -> {
-            final Block egg = type.getInstance(HatchableDragonEggBlock.class, null);
-            return egg == null ? state : egg.getDefaultState();
-        };
+        public static final Setter SETTER_DRAGON_EEG = (block, level, pos, state, type) -> type.ifPresent(HatchableDragonEggBlock.class, HatchableDragonEggBlock::getDefaultState, state);
         public static final Setter SETTER_DRAGON_HEAD = (block, level, pos, state, type) -> {
             final DragonVariant variant = type.variants.draw(level.random, block == Blocks.DRAGON_HEAD ?
                     DragonVariants.ENDER_FEMALE : block instanceof AbstractDragonHeadBlock ?
@@ -186,9 +183,9 @@ public class TypeCommand {
         BLOCK_HANDLER.bind(WallSkullBlock.class, BlockHandler.SETTER_DRAGON_HEAD_WALL);
     }
 
-    public static LiteralArgumentBuilder<ServerCommandSource> register() {
-        return CommandManager.literal("type").requires(HAS_PERMISSION_LEVEL_3)
-                .then(CommandManager.literal("block").then(BLOCK_HANDLER.load(CommandManager.argument("pos", BlockPosArgumentType.blockPos()))))
-                .then(CommandManager.literal("entity").then(ENTITY_HANDLER.load(CommandManager.argument("target", EntityArgumentType.entity()))));
+    public static ArgumentBuilder<ServerCommandSource, ?> register(Predicate<ServerCommandSource> permission) {
+        return CommandManager.literal("type")
+                .then(CommandManager.literal("block").then(BLOCK_HANDLER.load(CommandManager.argument("pos", BlockPosArgumentType.blockPos()), permission)))
+                .then(CommandManager.literal("entity").then(ENTITY_HANDLER.load(CommandManager.argument("target", EntityArgumentType.entity()), permission)));
     }
 }

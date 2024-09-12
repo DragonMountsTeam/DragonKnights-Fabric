@@ -13,6 +13,7 @@ import net.minecraft.entity.MovementType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
+import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -24,12 +25,10 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Random;
@@ -37,7 +36,8 @@ import java.util.Random;
 /**
  * @see net.minecraft.block.entity.ShulkerBoxBlockEntity
  */
-public class DragonCoreBlockEntity extends LootableContainerBlockEntity implements Tickable, ExtendedScreenHandlerFactory {
+public class DragonCoreBlockEntity extends LootableContainerBlockEntity implements SidedInventory, Tickable, ExtendedScreenHandlerFactory {
+    public static final int[] SLOTS = new int[]{0};
     private static final String TRANSLATION_KEY = "container.dragonmounts.dragon_core";
     private DefaultedList<ItemStack> items = DefaultedList.ofSize(1, ItemStack.EMPTY);
     private int openCount;
@@ -115,7 +115,7 @@ public class DragonCoreBlockEntity extends LootableContainerBlockEntity implemen
 
     @Override
     public int size() {
-        return items.size();
+        return this.items.size();
     }
 
     @Override
@@ -204,5 +204,20 @@ public class DragonCoreBlockEntity extends LootableContainerBlockEntity implemen
     @Override
     public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buffer) {
         buffer.writeBlockPos(this.pos);
+    }
+
+    @Override
+    public int[] getAvailableSlots(Direction side) {
+        return SLOTS;
+    }
+
+    @Override
+    public boolean canInsert(int slot, ItemStack stack, @Nullable Direction side) {
+        return false;
+    }
+
+    @Override
+    public boolean canExtract(int slot, ItemStack stack, Direction side) {
+        return false;
     }
 }

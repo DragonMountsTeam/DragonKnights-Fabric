@@ -13,8 +13,11 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.Registry;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
 import java.util.Random;
+import java.util.function.Consumer;
 
 import static it.unimi.dsi.fastutil.Arrays.MAX_ARRAY_SIZE;
 import static net.dragonmounts.DragonMounts.MOD_ID;
@@ -74,22 +77,10 @@ public class DragonVariant implements IDragonTypified {
         return old;
     }
 
-    public DragonHeadItem getHeadItem() {
-        return this.headItem;
-    }
-
-    public DragonHeadBlock getHeadBlock() {
-        return this.headBlock;
-    }
-
-    public DragonHeadWallBlock getHeadWallBlock() {
-        return this.headWallBlock;
-    }
-
     /**
      * Simplified {@link it.unimi.dsi.fastutil.objects.ReferenceArrayList}
      */
-    public static final class Manager implements IDragonTypified {
+    public static final class Manager implements IDragonTypified, Iterable<DragonVariant> {
         public static final int DEFAULT_INITIAL_CAPACITY = 8;
         public final DragonType type;
         private DragonVariant[] variants = {};
@@ -100,12 +91,12 @@ public class DragonVariant implements IDragonTypified {
         }
 
         private void grow(int capacity) {
-            if (capacity <= this.variants.length)
-                return;
-            if (this.variants.length > 0)
+            if (capacity <= this.variants.length) return;
+            if (this.variants.length > 0) {
                 capacity = (int) Math.max(Math.min((long) this.variants.length + (this.variants.length >> 1), MAX_ARRAY_SIZE), capacity);
-            else if (capacity < DEFAULT_INITIAL_CAPACITY)
+            } else if (capacity < DEFAULT_INITIAL_CAPACITY) {
                 capacity = DEFAULT_INITIAL_CAPACITY;
+            }
             final DragonVariant[] array = new DragonVariant[capacity];
             System.arraycopy(this.variants, 0, array, 0, size);
             this.variants = array;
@@ -146,6 +137,32 @@ public class DragonVariant implements IDragonTypified {
 
         public void register(DragonVariant variant) {
             if (variant.type == this.type) this.add(Registry.register(REGISTRY, variant.identifier, variant));
+        }
+
+        @Override
+        public @NotNull Iterator<DragonVariant> iterator() {
+            return new IteratorImpl();
+        }
+
+        @Override
+        public void forEach(Consumer<? super DragonVariant> action) {
+            for (int i = 0; i < this.size; ++i) {
+                action.accept(this.variants[i]);
+            }
+        }
+
+        public class IteratorImpl implements Iterator<DragonVariant> {
+            int i = 0;
+
+            @Override
+            public boolean hasNext() {
+                return this.i < Manager.this.size;
+            }
+
+            @Override
+            public DragonVariant next() {
+                return Manager.this.variants[i++];
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 package net.dragonmounts.entity.dragon;
 
 import net.dragonmounts.api.IDragonFood;
-import net.dragonmounts.block.entity.DragonCoreBlockEntity;
+import net.dragonmounts.block.DragonCoreBlock;
 import net.dragonmounts.config.ServerConfig;
 import net.dragonmounts.data.tag.DMItemTags;
 import net.dragonmounts.entity.ai.DragonFollowOwnerGoal;
@@ -21,7 +21,6 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LightningEntity;
@@ -150,17 +149,20 @@ public class ServerDragonEntity extends TameableDragonEntity {
 
     public void spawnEssence(ItemStack stack) {
         BlockPos pos = this.getBlockPos();
-        if (this.world.isAir(pos)) {
-            BlockState state = DMBlocks.DRAGON_CORE.getDefaultState().with(HORIZONTAL_FACING, this.getHorizontalFacing());
-            if (this.world.setBlockState(pos, state, 3)) {
-                BlockEntity entity = this.world.getBlockEntity(pos);
-                if (entity instanceof DragonCoreBlockEntity) {
-                    ((DragonCoreBlockEntity) entity).setStack(0, stack);
+        World level = this.world;
+        BlockState state = DMBlocks.DRAGON_CORE.getDefaultState().with(HORIZONTAL_FACING, this.getHorizontalFacing());
+        if (!DragonCoreBlock.tryPlaceAt(level, pos, state, stack)) {
+            int y = pos.getY(), max = Math.min(y + 5, level.getHeight());
+            BlockPos.Mutable mutable = pos.mutableCopy();
+            while (++y < max) {
+                mutable.setY(y);
+                if (DragonCoreBlock.tryPlaceAt(level, mutable, state, stack)) {
                     return;
                 }
             }
-        }
-        this.world.spawnEntity(new ItemEntity(this.world, this.getX(), this.getY(), this.getZ(), stack));
+        } else return;
+        Vec3d vec = this.getPos();
+        level.spawnEntity(new ItemEntity(level, vec.x, vec.y, vec.z, stack));
     }
 
     @Override
@@ -214,8 +216,8 @@ public class ServerDragonEntity extends TameableDragonEntity {
         Item item = stack.getItem();
         IDragonFood food = DragonFood.get(item);
         if (food != IDragonFood.UNKNOWN) {
-            if (!food.isEatable(this, player, stack, hand)) return ActionResult.FAIL;
-            food.eat(this, player, stack, hand);
+            if (!food.canFeed(this, player, stack, hand)) return ActionResult.FAIL;
+            food.feed(this, player, stack, hand);
             PacketByteBuf buffer = this.syncAgePacket().writeVarInt(Item.getRawId(item));
             for (ServerPlayerEntity target : PlayerLookup.tracking(this)) {
                 ServerPlayNetworking.send(target, DMPackets.FEED_DRAGON_PACKET_ID, buffer);

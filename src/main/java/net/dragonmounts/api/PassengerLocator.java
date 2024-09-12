@@ -3,8 +3,8 @@ package net.dragonmounts.api;
 import net.minecraft.util.math.Vec3d;
 
 @FunctionalInterface
-public interface IPassengerOffset {
-    IPassengerOffset DEFAULT = (index, sitting) -> {
+public interface PassengerLocator {
+    PassengerLocator DEFAULT = (index, sitting) -> {
         double yOffset = sitting ? 3.4 : 4.4;
         double yOffset2 = sitting ? 2.1 : 2.5; // maybe not needed
         // dragon position is the middle of the model, and the saddle is on
@@ -24,5 +24,5 @@ public interface IPassengerOffset {
         }
     };
 
-    Vec3d get(int index, boolean sitting);
+    Vec3d locate(int index, boolean sitting);
 }

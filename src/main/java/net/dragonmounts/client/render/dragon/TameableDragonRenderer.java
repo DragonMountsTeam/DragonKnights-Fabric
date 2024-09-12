@@ -1,7 +1,7 @@
 package net.dragonmounts.client.render.dragon;
 
 import net.dragonmounts.client.ClientDragonEntity;
-import net.dragonmounts.client.DragonAnimationContext;
+import net.dragonmounts.client.DragonRendererContext;
 import net.dragonmounts.client.model.dragon.DragonModel;
 import net.dragonmounts.client.variant.VariantAppearances;
 import net.minecraft.client.render.RenderLayer;
@@ -13,10 +13,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 
 import static net.minecraft.client.render.entity.EnderDragonEntityRenderer.renderCrystalBeam;
-
 
 public class TameableDragonRenderer extends LivingEntityRenderer<ClientDragonEntity, DragonModel> {
 
@@ -37,7 +37,7 @@ public class TameableDragonRenderer extends LivingEntityRenderer<ClientDragonEnt
         float scale = dragon.getScaleFactor() * dragon.getVariant().getAppearance(VariantAppearances.ENDER_FEMALE).renderScale;
         matrices.scale(scale, scale, scale);
         this.shadowRadius = dragon.isBaby() ? 4 * scale : 2 * scale;
-        DragonAnimationContext context = dragon.context;
+        DragonRendererContext context = dragon.context;
         matrices.translate(context.getModelOffsetX(), context.getModelOffsetY(), context.getModelOffsetZ());
         matrices.translate(0, 1.5, 0.5); // change rotation point
         matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(context.getModelPitch(partialTicks))); // rotate near the saddle so we can support the player
@@ -46,14 +46,22 @@ public class TameableDragonRenderer extends LivingEntityRenderer<ClientDragonEnt
 
     @Override
     public void render(ClientDragonEntity dragon, float entityYaw, float partialTicks, MatrixStack matrices, VertexConsumerProvider buffer, int light) {
-        if (dragon.renderCrystalBeams) {
+        if (!dragon.context.isInGUI) {
             EndCrystalEntity crystal = dragon.nearestCrystal;
             if (crystal != null) {
                 matrices.push();
-                float x = (float) (crystal.getX() - MathHelper.lerp(partialTicks, dragon.prevX, dragon.getX()));
-                float y = (float) (crystal.getY() - MathHelper.lerp(partialTicks, dragon.prevY, dragon.getY()));
-                float z = (float) (crystal.getZ() - MathHelper.lerp(partialTicks, dragon.prevZ, dragon.getZ()));
-                renderCrystalBeam(x, y + EndCrystalEntityRenderer.getYOffset(crystal, partialTicks), z, partialTicks, dragon.timeUntilRegen, matrices, buffer, light);
+                Vec3d start = crystal.getPos();
+                Vec3d end = dragon.getPos();
+                renderCrystalBeam(
+                        (float) (start.x - MathHelper.lerp(partialTicks, dragon.prevX, end.x)),
+                        (float) (start.y - MathHelper.lerp(partialTicks, dragon.prevY, end.y)) + EndCrystalEntityRenderer.getYOffset(crystal, partialTicks),
+                        (float) (start.x - MathHelper.lerp(partialTicks, dragon.prevX, end.z)),
+                        partialTicks,
+                        dragon.timeUntilRegen,
+                        matrices,
+                        buffer,
+                        light
+                );
                 matrices.pop();
             }
         }

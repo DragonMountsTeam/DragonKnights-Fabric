@@ -4,6 +4,7 @@ import net.dragonmounts.block.AbstractDragonHeadBlock;
 import net.dragonmounts.block.entity.DragonCoreBlockEntity;
 import net.dragonmounts.block.entity.DragonHeadBlockEntity;
 import net.dragonmounts.registry.DragonVariant;
+import net.dragonmounts.util.Values;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -15,9 +16,10 @@ public class DMBlockEntities {
     public static final BlockEntityType<DragonHeadBlockEntity> DRAGON_HEAD;
 
     static {
-        AbstractDragonHeadBlock[] blocks = new AbstractDragonHeadBlock[DragonVariants.VALUES.length << 1];
+        Values<DragonVariant> variants = DragonVariants.BUILTIN_VALUES;
+        AbstractDragonHeadBlock[] blocks = new AbstractDragonHeadBlock[variants.length << 1];
         int i = 0;
-        for (DragonVariant variant : DragonVariants.VALUES) {
+        for (DragonVariant variant : variants) {
             blocks[i++] = variant.headBlock;
             blocks[i++] = variant.headWallBlock;
         }

@@ -45,7 +45,7 @@ public class DragonAmuletItem extends AmuletItem<TameableDragonEntity> implement
     public final DragonType type;
 
     public DragonAmuletItem(DragonType type, Settings props) {
-        super(props);
+        super(TameableDragonEntity.class, props);
         this.type = type;
     }
 
@@ -90,7 +90,6 @@ public class DragonAmuletItem extends AmuletItem<TameableDragonEntity> implement
         BlockPos pos = context.getBlockPos();
         Direction direction = context.getSide();
         BlockPos spawnPos = level.getBlockState(pos).getCollisionShape(level, pos).isEmpty() ? pos : pos.offset(direction);
-        LOGGER.info("pos: {}, {}", pos, spawnPos);
         level.spawnEntity(this.loadEntity(
                 (ServerWorld) level,
                 player,
@@ -186,14 +185,14 @@ public class DragonAmuletItem extends AmuletItem<TameableDragonEntity> implement
             boolean extraOffset
     ) {
         ServerDragonEntity dragon = new ServerDragonEntity(level);
-        if (tag != null) {
+        if (tag == null) {
+            finalizeSpawn(level, dragon, pos, reason, null, null, yOffset, extraOffset);
+            dragon.setDragonType(this.type, true);
+        } else {
             tag.remove("Passengers");
             finalizeSpawn(level, dragon, pos, reason, null, tag, yOffset, extraOffset);
             dragon.readNbt(dragon.writeNbt(new NbtCompound()).copyFrom(tag));
             loadScores(dragon, tag).setDragonType(this.type, false);
-        } else {
-            finalizeSpawn(level, dragon, pos, reason, null, null, yOffset, extraOffset);
-            dragon.setDragonType(this.type, true);
         }
         return dragon;
     }

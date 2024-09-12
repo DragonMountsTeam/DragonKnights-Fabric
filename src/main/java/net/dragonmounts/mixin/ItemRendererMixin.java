@@ -47,4 +47,6 @@ public abstract class ItemRendererMixin {
             }
         }
     }
+
+    private ItemRendererMixin() {}
 }

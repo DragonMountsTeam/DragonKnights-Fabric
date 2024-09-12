@@ -38,7 +38,7 @@ public interface IEntityContainer<T extends Entity> {
 
     @Nullable
     Entity loadEntity(
-            ServerWorld world,
+            ServerWorld level,
             @Nullable PlayerEntity player,
             NbtCompound tag,
             BlockPos pos,
@@ -49,6 +49,8 @@ public interface IEntityContainer<T extends Entity> {
     );
 
     ItemStack saveEntity(T entity);
+
+    Class<T> getContentType();
 
     boolean isEmpty(@Nullable NbtCompound tag);
 

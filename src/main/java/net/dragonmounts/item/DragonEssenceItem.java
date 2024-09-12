@@ -140,11 +140,15 @@ public class DragonEssenceItem extends Item implements IDragonTypified, IEntityC
         tag.remove("LifeStage");
         tag.remove("LoveCause");
         tag.remove("ShearCooldown");
-        tag.remove("Sitting");
         LivingEntity owner = entity.getOwner();
         if (owner != null) tag.putString("OwnerName", Text.Serializer.toJson(owner.getName()));
         stack.setTag(tag);
         return stack;
+    }
+
+    @Override
+    public Class<TameableDragonEntity> getContentType() {
+        return TameableDragonEntity.class;
     }
 
     @Override
@@ -159,14 +163,14 @@ public class DragonEssenceItem extends Item implements IDragonTypified, IEntityC
             boolean extraOffset
     ) {
         ServerDragonEntity dragon = new ServerDragonEntity(level);
-        if (tag != null) {
+        if (tag == null) {
+            finalizeSpawn(level, dragon, pos, reason, null, null, yOffset, extraOffset);
+            dragon.setDragonType(this.type, true);
+        } else {
             tag.remove("Passengers");
             finalizeSpawn(level, dragon, pos, reason, null, tag, yOffset, extraOffset);
             dragon.readNbt(dragon.writeNbt(new NbtCompound()).copyFrom(tag));
             dragon.setDragonType(this.type, false);
-        } else {
-            finalizeSpawn(level, dragon, pos, reason, null, null, yOffset, extraOffset);
-            dragon.setDragonType(this.type, true);
         }
         dragon.setLifeStage(DragonLifeStage.NEWBORN, true, false);
         return dragon;

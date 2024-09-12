@@ -21,13 +21,14 @@ import java.util.Random;
 @FunctionalInterface
 public interface IDragonFood {
     IDragonFood UNKNOWN = (dragon, player, stack, hand) -> {};
-    void eat(TameableDragonEntity dragon, PlayerEntity player, ItemStack stack, Hand hand);
 
-    default boolean isEatable(TameableDragonEntity dragon, PlayerEntity player, ItemStack stack, Hand hand) {
+    void feed(TameableDragonEntity dragon, PlayerEntity player, ItemStack stack, Hand hand);
+
+    default boolean canFeed(TameableDragonEntity dragon, PlayerEntity player, ItemStack stack, Hand hand) {
         return true;
     }
 
-    default void act(ClientDragonEntity dragon, Item item) {
+    default void displayEatingEffects(ClientDragonEntity dragon, Item item) {
         if (item == Items.AIR) return;
         if (dragon.getLifeStage() != DragonLifeStage.ADULT) {
             dragon.refreshForcedAgeTimer();

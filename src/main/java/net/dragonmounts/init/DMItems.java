@@ -309,7 +309,7 @@ public class DMItems {
     public static final TieredShearsItem DIAMOND_SHEARS = createTieredShears("diamond_shears", ToolMaterials.DIAMOND, item());
     public static final TieredShearsItem NETHERITE_SHEARS = createTieredShears("netherite_shears", ToolMaterials.NETHERITE, item().fireproof());
     //Dragon Amulets
-    public static final AmuletItem<Entity> AMULET = Registry.register(Registry.ITEM, makeId("amulet"), new AmuletItem<>(item()));
+    public static final AmuletItem<Entity> AMULET = Registry.register(Registry.ITEM, makeId("amulet"), new AmuletItem<>(Entity.class, item()));
     public static final DragonAmuletItem FOREST_DRAGON_AMULET = createDragonAmulet("forest_dragon_amulet", DragonTypes.FOREST, none());
     public static final DragonAmuletItem FIRE_DRAGON_AMULET = createDragonAmulet("fire_dragon_amulet", DragonTypes.FIRE, none());
     public static final DragonAmuletItem ICE_DRAGON_AMULET = createDragonAmulet("ice_dragon_amulet", DragonTypes.ICE, none());

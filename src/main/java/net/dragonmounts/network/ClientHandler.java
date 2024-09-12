@@ -5,12 +5,9 @@ import net.dragonmounts.capability.IArmorEffectManager.Provider;
 import net.dragonmounts.client.ClientDragonEntity;
 import net.dragonmounts.entity.dragon.DragonLifeStage;
 import net.dragonmounts.entity.dragon.HatchableDragonEggEntity;
-import net.dragonmounts.init.DMSounds;
 import net.dragonmounts.registry.CooldownCategory;
 import net.dragonmounts.util.DragonFood;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
@@ -73,19 +70,19 @@ public class ClientHandler {
 
     public static void handleEggShake(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buffer, PacketSender sender) {
         int id = buffer.readVarInt();
-        int amplitude = buffer.readVarInt();
-        float axis = buffer.readFloat();
-        boolean particle = buffer.readBoolean();
+        int amplitude = buffer.readByte();
+        int axis = Byte.toUnsignedInt(buffer.readByte());
+        int flag = buffer.readByte();
         client.execute(() -> {
             ClientWorld level = client.world;
             if (level == null) return;
             Entity entity = level.getEntityById(id);
             if (entity instanceof HatchableDragonEggEntity) {
-                BlockState state = ((HatchableDragonEggEntity) entity).syncShake(amplitude, axis);
-                if (particle) {
-                    level.syncWorldEvent(2001, entity.getBlockPos(), Block.getRawIdFromState(state));
-                }
-                level.playSound(entity.getX(), entity.getY(), entity.getZ(), DMSounds.DRAGON_HATCHING, SoundCategory.NEUTRAL, 1.0F, 1.0F, false);
+                ((HatchableDragonEggEntity) entity).syncShake(
+                        amplitude,
+                        (flag & 0b10) == 0b10 ? -axis : axis,
+                        (flag & 0b01) == 0b01
+                );
             }
         });
     }
@@ -114,7 +111,7 @@ public class ClientHandler {
             if (entity instanceof ClientDragonEntity) {
                 ClientDragonEntity dragon = (ClientDragonEntity) entity;
                 ((ClientDragonEntity) entity).handleAgeSync(age, stage);
-                DragonFood.get(item).act(dragon, item);
+                DragonFood.get(item).displayEatingEffects(dragon, item);
             }
         });
     }

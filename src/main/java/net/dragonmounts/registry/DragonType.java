@@ -3,7 +3,7 @@ package net.dragonmounts.registry;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableMultimap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import net.dragonmounts.api.IPassengerOffset;
+import net.dragonmounts.api.PassengerLocator;
 import net.dragonmounts.entity.dragon.HatchableDragonEggEntity;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.block.Block;
@@ -25,6 +25,8 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static net.dragonmounts.DragonMounts.MOD_ID;
@@ -55,7 +57,7 @@ public class DragonType {
     public final Identifier identifier;
     public final ImmutableMultimap<EntityAttribute, EntityAttributeModifier> attributes;
     public final Predicate<HatchableDragonEggEntity> isHabitatEnvironment;
-    public final IPassengerOffset passengerOffset;
+    public final PassengerLocator passengerLocator;
     public final ParticleEffect sneezeParticle;
     public final ParticleEffect eggParticle;
     public final DragonVariant.Manager variants = new DragonVariant.Manager(this);
@@ -79,7 +81,7 @@ public class DragonType {
         this.biomes = new ArrayList<>(props.biomes);
         this.sneezeParticle = props.sneezeParticle;
         this.eggParticle = props.eggParticle;
-        this.passengerOffset = props.passengerOffset;
+        this.passengerLocator = props.passengerLocator;
         this.isHabitatEnvironment = props.isHabitatEnvironment;
         this.translationKey = createTranslationKey();
         this.lootTable = createLootTable();
@@ -122,6 +124,21 @@ public class DragonType {
         return clazz.cast(this.map.getOrDefault(clazz, defaultValue));
     }
 
+    public <T> void ifPresent(Class<T> clazz, Consumer<? super T> consumer) {
+        Object value = this.map.get(clazz);
+        if (value != null) {
+            consumer.accept(clazz.cast(value));
+        }
+    }
+
+    public <T, V> V ifPresent(Class<T> clazz, Function<? super T, V> function, V defaultValue) {
+        Object value = this.map.get(clazz);
+        if (value != null) {
+            return function.apply(clazz.cast(value));
+        }
+        return defaultValue;
+    }
+
     public static class Properties {
         protected static final UUID MODIFIER_UUID = UUID.fromString("12e4cc82-db6d-5676-afc5-86498f0f6464");
         public final ImmutableMultimap.Builder<EntityAttribute, EntityAttributeModifier> attributes = ImmutableMultimap.builder();
@@ -133,7 +150,7 @@ public class DragonType {
         public boolean isSkeleton = false;
         public ParticleEffect sneezeParticle = ParticleTypes.LARGE_SMOKE;
         public ParticleEffect eggParticle = ParticleTypes.MYCELIUM;
-        public IPassengerOffset passengerOffset = IPassengerOffset.DEFAULT;
+        public PassengerLocator passengerLocator = PassengerLocator.DEFAULT;
         public Predicate<HatchableDragonEggEntity> isHabitatEnvironment = Predicates.alwaysFalse();
 
         public Properties(int color) {
@@ -188,8 +205,8 @@ public class DragonType {
             return this;
         }
 
-        public Properties setPassengerOffset(IPassengerOffset offset) {
-            this.passengerOffset = offset;
+        public Properties setPassengerLocator(PassengerLocator locator) {
+            this.passengerLocator = locator;
             return this;
         }
 

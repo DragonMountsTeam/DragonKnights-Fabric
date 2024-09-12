@@ -12,14 +12,10 @@ public class TimeUtil {
      * @param value raw time (in ticks)
      * @return formatted time (in seconds)
      */
-    public static String formatAsFloat(int value) {
-        value = (value + 1) >> 1;
-        if (value < 10) {
-            return "0." + value;
-        }
-        StringBuilder builder = new StringBuilder().append(value);
-        value = builder.length() - 1;
-        builder.append(builder.charAt(value)).setCharAt(value, '.');
+    public static String stringifyTick(int value) {
+        if (value < 19) return "0." + ((value + 1) >> 1);
+        StringBuilder builder = new StringBuilder().append((value + 1) >> 1);//value: ticks
+        builder.append(builder.charAt(value = builder.length() - 1)).setCharAt(value, '.');//value: index
         return builder.toString();
     }
 }

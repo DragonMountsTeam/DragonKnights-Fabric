@@ -11,7 +11,6 @@ public abstract class RenderStateAccessor extends RenderPhase {
                 .texture(new RenderPhase.Texture(location, false, false))
                 .transparency(TRANSLUCENT_TRANSPARENCY)
                 .writeMaskState(COLOR_MASK)
-                //.fog(BLACK_FOG)
                 .build(false)
         );
     }
@@ -19,11 +18,11 @@ public abstract class RenderStateAccessor extends RenderPhase {
     public static RenderLayer createGlowDecalRenderLayer(Identifier location) {
         return RenderLayer.of("glow_decal", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, 7, 256, false, true, RenderLayer.MultiPhaseParameters.builder()
                 .texture(new RenderPhase.Texture(location, false, false))
-                //TODO: glow
                 .diffuseLighting(ENABLE_DIFFUSE_LIGHTING)
                 .alpha(ONE_TENTH_ALPHA)
                 .depthTest(EQUAL_DEPTH_TEST)
                 .cull(DISABLE_CULLING)
+                .writeMaskState(COLOR_MASK)
                 .lightmap(ENABLE_LIGHTMAP)
                 .overlay(ENABLE_OVERLAY_COLOR)
                 .build(false)

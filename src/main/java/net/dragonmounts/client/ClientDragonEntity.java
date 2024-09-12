@@ -26,8 +26,7 @@ import net.minecraft.world.World;
 
 
 public class ClientDragonEntity extends TameableDragonEntity {
-    public final DragonAnimationContext context = new DragonAnimationContext(this);
-    public boolean renderCrystalBeams = true;
+    public final DragonRendererContext context = new DragonRendererContext(this);
     private int rideFlag = -1;
 
     public ClientDragonEntity(EntityType<? extends TameableDragonEntity> type, World world) {
