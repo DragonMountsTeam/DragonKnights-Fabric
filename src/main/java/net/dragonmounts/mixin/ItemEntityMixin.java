@@ -36,12 +36,12 @@ public abstract class ItemEntityMixin extends Entity {
     }
 
     /**
-     * Forge patch that fixes <a href="https://bugs.mojang.com/browse/MC-53850">MC-53850</a>
+     * Mojang patch that fixes <a href="https://bugs.mojang.com/browse/MC-53850">MC-53850</a>
      */
-    @Inject(method = "damage", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ItemEntity;scheduleVelocityUpdate()V"), cancellable = true)
     public void fixMC53850(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
-        if (this.world.isClient || this.removed) {
-            info.setReturnValue(false);
+        if (this.world.isClient) {
+            info.setReturnValue(true);
         }
     }
 
@@ -54,7 +54,7 @@ public abstract class ItemEntityMixin extends Entity {
             NbtCompound tag = stack.getTag();
             if (amulet.isEmpty(tag)) return;
             assert tag != null;
-            ServerWorld level = (ServerWorld) this.world;
+            ServerWorld level = (ServerWorld) this.world;// safe to cast with MC-53850 fixed
             Entity entity = amulet.loadEntity(level, null, tag, this.getLandingPos(), SpawnReason.BUCKET, null, true, false);
             if (entity != null) {
                 level.spawnEntityAndPassengers(entity);
