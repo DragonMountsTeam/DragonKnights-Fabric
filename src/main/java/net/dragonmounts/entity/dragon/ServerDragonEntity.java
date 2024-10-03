@@ -1,5 +1,6 @@
 package net.dragonmounts.entity.dragon;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.dragonmounts.api.IDragonFood;
 import net.dragonmounts.block.DragonCoreBlock;
 import net.dragonmounts.config.ServerConfig;
@@ -13,10 +14,13 @@ import net.dragonmounts.registry.DragonType;
 import net.dragonmounts.registry.DragonVariant;
 import net.dragonmounts.tag.DMItemTags;
 import net.dragonmounts.util.DragonFood;
+import net.dragonmounts.util.FluteSound;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -41,11 +45,23 @@ import static net.minecraft.resources.ResourceLocation.tryParse;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 public class ServerDragonEntity extends TameableDragonEntity {
+    private final ObjectOpenHashSet<FluteSound> authorizedFluteSounds = new ObjectOpenHashSet<>();
     //public final PlayerControlledGoal playerControlledGoal;
 
     public ServerDragonEntity(EntityType<? extends TameableDragonEntity> type, Level level) {
         super(type, level);
         //this.goalSelector.addGoal(0, this.playerControlledGoal = new PlayerControlledGoal(this));
+    }
+
+    @Override
+    public InteractionResult authorizeFlute(Player player, ItemStack stack) {
+        if (this.isOwnedBy(player)) {
+            this.authorizedFluteSounds.add(
+                    FluteSound.getOrCreate(stack).listen(this)
+            );
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.FAIL;
     }
 
     public ServerDragonEntity(Level level) {
@@ -85,6 +101,11 @@ public class ServerDragonEntity extends TameableDragonEntity {
         tag.putString(DragonLifeStage.DATA_PARAMETER_KEY, this.stage.getSerializedName());
         tag.putBoolean(AGE_LOCKED_DATA_PARAMETER_KEY, this.isAgeLocked());
         tag.putInt(SHEARED_DATA_PARAMETER_KEY, this.isSheared() ? this.shearCooldown : 0);
+        var sounds = new ListTag();
+        for (var sound : this.authorizedFluteSounds) {
+            sounds.add(NbtUtils.createUUID(sound.uuid));
+        }
+        tag.put(AUTHORIZED_FLUTE_SOUNDS_PARAMETER_KEY, sounds);
         var items = this.inventory.saveItems(this.registryAccess());
         if (!items.isEmpty()) {
             tag.put(DragonInventory.DATA_PARAMETER_KEY, items);
@@ -121,6 +142,12 @@ public class ServerDragonEntity extends TameableDragonEntity {
         }
         if (tag.contains(DragonInventory.DATA_PARAMETER_KEY)) {
             this.inventory.loadItems(tag.getList(DragonInventory.DATA_PARAMETER_KEY, 10), this.registryAccess());
+        }
+        if (tag.contains(AUTHORIZED_FLUTE_SOUNDS_PARAMETER_KEY)) {
+            this.authorizedFluteSounds.clear();
+            for (var sound : tag.getList(AUTHORIZED_FLUTE_SOUNDS_PARAMETER_KEY, 11)) {
+                this.authorizedFluteSounds.add(FluteSound.getOrCreate(NbtUtils.loadUUID(sound)));
+            }
         }
     }
 

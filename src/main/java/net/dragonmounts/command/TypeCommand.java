@@ -16,6 +16,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.commands.arguments.coordinates.Coordinates;
+import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -32,18 +34,20 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 
 public class TypeCommand {
     public abstract static class CommandHandler<A> {
-        protected abstract A getArgument(CommandContext<CommandSourceStack> context) throws CommandSyntaxException;
+        protected abstract RequiredArgumentBuilder<CommandSourceStack, ?> input();
+
+        protected abstract A parse(CommandContext<CommandSourceStack> context) throws CommandSyntaxException;
 
         protected abstract int setType(CommandContext<CommandSourceStack> context, A argument, DragonType type);
 
         protected abstract int getType(CommandContext<CommandSourceStack> context, A argument);
 
-        public <T> RequiredArgumentBuilder<CommandSourceStack, T> load(RequiredArgumentBuilder<CommandSourceStack, T> builder, Predicate<CommandSourceStack> permission) {
+        public RequiredArgumentBuilder<CommandSourceStack, ?> generateCommand(Predicate<CommandSourceStack> permission) {
+            var builder = this.input();
             for (var type : DragonType.REGISTRY) {
-                builder.then(Commands.literal(type.identifier.toString()).requires(permission).executes(context -> this.setType(context, this.getArgument(context), type)));
+                builder.then(Commands.literal(type.identifier.toString()).requires(permission).executes(context -> this.setType(context, this.parse(context), type)));
             }
-            builder.executes(context -> this.getType(context, this.getArgument(context)));
-            return builder;
+            return builder.executes(context -> this.getType(context, this.parse(context)));
         }
     }
 
@@ -82,7 +86,12 @@ public class TypeCommand {
         }
 
         @Override
-        protected BlockPos getArgument(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        protected RequiredArgumentBuilder<CommandSourceStack, Coordinates> input() {
+            return Commands.argument("pos", BlockPosArgument.blockPos());
+        }
+
+        @Override
+        protected BlockPos parse(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
             return BlockPosArgument.getLoadedBlockPos(context, "pos");
         }
 
@@ -132,30 +141,34 @@ public class TypeCommand {
 
     public static class EntityHandler extends CommandHandler<Entity> {
         @Override
-        protected Entity getArgument(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        protected RequiredArgumentBuilder<CommandSourceStack, EntitySelector> input() {
+            return Commands.argument("target", EntityArgument.entity());
+        }
+
+        @Override
+        protected Entity parse(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
             return EntityArgument.getEntity(context, "target");
         }
 
         @Override
         protected int setType(CommandContext<CommandSourceStack> context, Entity entity, DragonType type) {
-            var source = context.getSource();
             if (entity instanceof DragonTypified.Mutable) {
+                var name = entity.getDisplayName();// name may get changed after setting a new type
                 ((DragonTypified.Mutable) entity).setDragonType(type);
-                source.sendSuccess(() -> Component.translatable("commands.dragonmounts.type.entity.set", entity.getDisplayName(), type.getName()), true);
+                context.getSource().sendSuccess(() -> Component.translatable("commands.dragonmounts.type.entity.set", name, type.getName()), true);
                 return 1;
             }
-            source.sendFailure(createClassCastException(entity, DragonTypified.Mutable.class));
+            context.getSource().sendFailure(createClassCastException(entity, DragonTypified.Mutable.class));
             return 0;
         }
 
         @Override
         protected int getType(CommandContext<CommandSourceStack> context, Entity entity) {
-            var source = context.getSource();
             if (entity instanceof DragonTypified) {
-                source.sendSuccess(() -> Component.translatable("commands.dragonmounts.type.entity.get", entity.getDisplayName(), ((DragonTypified) entity).getDragonType().getName()), true);
+                context.getSource().sendSuccess(() -> Component.translatable("commands.dragonmounts.type.entity.get", entity.getDisplayName(), ((DragonTypified) entity).getDragonType().getName()), true);
                 return 1;
             }
-            source.sendFailure(createClassCastException(entity, DragonTypified.class));
+            context.getSource().sendFailure(createClassCastException(entity, DragonTypified.class));
             return 0;
         }
     }
@@ -164,9 +177,9 @@ public class TypeCommand {
     public static final EntityHandler ENTITY_HANDLER = new EntityHandler();
 
     static {
-        BLOCK_HANDLER.bind(DragonEggBlock.class, ($_, __, $, $$) -> DragonTypes.ENDER);
-        BLOCK_HANDLER.bind(SkullBlock.class, (block, __, $, $$) -> block == Blocks.DRAGON_HEAD ? DragonTypes.ENDER : null);
-        BLOCK_HANDLER.bind(WallSkullBlock.class, (block, __, $, $$) -> block == Blocks.DRAGON_WALL_HEAD ? DragonTypes.ENDER : null);
+        BLOCK_HANDLER.bind(DragonEggBlock.class, (block, level, pos, state) -> DragonTypes.ENDER);
+        BLOCK_HANDLER.bind(SkullBlock.class, (block, level, pos, state) -> block == Blocks.DRAGON_HEAD ? DragonTypes.ENDER : null);
+        BLOCK_HANDLER.bind(WallSkullBlock.class, (block, level, pos, state) -> block == Blocks.DRAGON_WALL_HEAD ? DragonTypes.ENDER : null);
         BLOCK_HANDLER.bind(DragonEggBlock.class, BlockHandler.SETTER_DRAGON_EEG);
         BLOCK_HANDLER.bind(HatchableDragonEggBlock.class, BlockHandler.SETTER_DRAGON_EEG);
         BLOCK_HANDLER.bind(DragonHeadBlock.class, BlockHandler.SETTER_DRAGON_HEAD);
@@ -177,7 +190,7 @@ public class TypeCommand {
 
     public static LiteralArgumentBuilder<CommandSourceStack> register(Predicate<CommandSourceStack> permission) {
         return Commands.literal("type")
-                .then(Commands.literal("block").then(BLOCK_HANDLER.load(Commands.argument("pos", BlockPosArgument.blockPos()), permission)))
-                .then(Commands.literal("entity").then(ENTITY_HANDLER.load(Commands.argument("target", EntityArgument.entity()), permission)));
+                .then(Commands.literal("block").then(BLOCK_HANDLER.generateCommand(permission)))
+                .then(Commands.literal("entity").then(ENTITY_HANDLER.generateCommand(permission)));
     }
 }

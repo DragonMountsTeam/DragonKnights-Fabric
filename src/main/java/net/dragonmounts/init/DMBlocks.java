@@ -47,6 +47,7 @@ public class DMBlocks {
     public static final Values<HatchableDragonEggBlock> BUILTIN_EGGS = new Values<>(DMBlocks.class, HatchableDragonEggBlock.class);
     public static final Block DRAGON_NEST;
     public static final DragonCoreBlock DRAGON_CORE;
+
     static {
         final Block block = new Block(BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).instrument(NoteBlockInstrument.BASS).strength(1.0F).sound(SoundType.WOOD).ignitedByLava());
         final ResourceLocation identifier = makeId("dragon_nest");

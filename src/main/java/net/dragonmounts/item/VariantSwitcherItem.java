@@ -17,13 +17,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.ROTATION_16;
 
 public class VariantSwitcherItem extends Item {
-    public static @NotNull DragonVariant draw(RandomSource random, DragonVariant current) {
+    public static DragonVariant draw(RandomSource random, DragonVariant current) {
         return current.type.variants.draw(random, current, false);
     }
 
@@ -32,7 +31,7 @@ public class VariantSwitcherItem extends Item {
     }
 
     @Override
-    public @NotNull InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
         if (entity instanceof TameableDragonEntity dragon) {
             var level = dragon.level();
             if (level.isClientSide) return InteractionResult.SUCCESS;
@@ -49,7 +48,7 @@ public class VariantSwitcherItem extends Item {
     }
 
     @Override
-    public @NotNull InteractionResult useOn(UseOnContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         var level = context.getLevel();
         var pos = context.getClickedPos();
         var player = context.getPlayer();

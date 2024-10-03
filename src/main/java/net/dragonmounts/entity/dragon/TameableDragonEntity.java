@@ -26,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -97,6 +98,7 @@ public abstract class TameableDragonEntity extends TamableAnimal implements Exte
     public static final String FLYING_DATA_PARAMETER_KEY = "Flying";
     public static final String SADDLE_DATA_PARAMETER_KEY = "Saddle";
     public static final String SHEARED_DATA_PARAMETER_KEY = "ShearCooldown";
+    public static final String AUTHORIZED_FLUTE_SOUNDS_PARAMETER_KEY = "AuthorizedFluteSounds";
     public EndCrystal nearestCrystal;
     protected DragonLifeStage stage = DragonLifeStage.ADULT;
     protected boolean hasChest = false;
@@ -141,8 +143,9 @@ public abstract class TameableDragonEntity extends TamableAnimal implements Exte
         return stack.getItem() instanceof DragonArmorItem;
     }
 
-    public void inventoryChanged() {
-    }
+    public void inventoryChanged() {}
+
+    public abstract InteractionResult authorizeFlute(Player player, ItemStack stack);
 
     public final DragonVariant getVariant() {
         return this.entityData.get(DATA_DRAGON_VARIANT);

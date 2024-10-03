@@ -7,6 +7,7 @@ import net.dragonmounts.tag.DMItemTags;
 import net.dragonmounts.util.DragonFood;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SaddleItem;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +28,13 @@ public class ClientDragonEntity extends TameableDragonEntity {
 
     public ClientDragonEntity(EntityType<? extends TameableDragonEntity> type, Level world) {
         super(type, world);
+    }
+
+    @Override
+    public InteractionResult authorizeFlute(Player player, ItemStack stack) {
+        if (this.isOwnedBy(player)) return InteractionResult.CONSUME;
+        player.displayClientMessage(Component.translatable("message.dragonmounts.not_owner"), true);
+        return InteractionResult.FAIL;
     }
 
    /* public void onWingsDown(float speed) {

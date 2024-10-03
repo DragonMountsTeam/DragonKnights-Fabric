@@ -315,6 +315,7 @@ public class DMItems {
             List.of(),
             List.of()
     ), ITEMS);
+    public static final FluteItem FLUTE = registerItem("flute", new FluteItem(new Properties()), ITEMS);
     public static final VariantSwitcherItem VARIANT_SWITCHER = registerItem("variant_switcher", new VariantSwitcherItem(new Properties()), ITEMS);
     //Shears
     public static final TieredShearsItem DIAMOND_SHEARS = createTieredShears("diamond_shears", Tiers.DIAMOND, new Properties());

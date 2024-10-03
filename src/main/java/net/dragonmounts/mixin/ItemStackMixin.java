@@ -31,7 +31,7 @@ public abstract class ItemStackMixin {
     @Inject(method = "getTooltipLines", at = @At(
             value = "FIELD",
             target = "Lnet/minecraft/core/component/DataComponents;HIDE_ADDITIONAL_TOOLTIP:Lnet/minecraft/core/component/DataComponentType;"
-    ))
+    ))//Append tooltip at a position before "additional tooltip"
     public void appendDragonTypifiedText(
             Item.TooltipContext context,
             @Nullable Player a,

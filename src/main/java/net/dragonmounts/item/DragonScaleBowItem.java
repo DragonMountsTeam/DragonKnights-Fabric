@@ -6,7 +6,6 @@ import net.dragonmounts.init.DMDataComponents;
 import net.dragonmounts.registry.DragonType;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import static net.dragonmounts.DragonMounts.ITEM_TRANSLATION_KEY_PREFIX;
 
@@ -30,7 +29,7 @@ public class DragonScaleBowItem extends BowItem implements DragonTypified {
     }
 
     @Override
-    public @NotNull String getDescriptionId() {
+    public String getDescriptionId() {
         return TRANSLATION_KEY;
     }
 

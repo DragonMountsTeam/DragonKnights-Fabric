@@ -1,0 +1,14 @@
+{
+	"parent": "item/handheld",
+	"textures": {
+		"layer0": "dragonmounts:item/flute"
+	},
+	"overrides": [
+		{
+			"predicate": {
+				"playing": 1
+			},
+			 "model": "dragonmounts:item/flute_playing"
+		}
+	]
+}

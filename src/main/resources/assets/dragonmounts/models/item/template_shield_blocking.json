@@ -1,21 +1,53 @@
 {
   "parent": "dragonmounts:item/template_shield",
-	"display": {
-		"thirdperson_righthand": {
-			"rotation": [32, 32, 6],
-			"translation": [6.8, 1.32, -3.4]
-		},
-		"thirdperson_lefthand": {
-			"rotation": [32, -148, -6],
-			"translation": [6.8, 1.32, -2.4]
-		},
-		"firstperson_righthand": {
-			"rotation": [0, 90, 0],
-			"translation": [-2, 0.5, -3.5]
-		},
-		"firstperson_lefthand": {
-			"rotation": [0, -90, 0],
-			"translation": [-2, 0.5, -3.5]
-		}
-	}
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        32,
+        32,
+        6
+      ],
+      "translation": [
+        6.8,
+        1.32,
+        -3.4
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        32,
+        -148,
+        -6
+      ],
+      "translation": [
+        6.8,
+        1.32,
+        -2.4
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "translation": [
+        -2,
+        0.5,
+        -3.5
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "translation": [
+        -2,
+        0.5,
+        -3.5
+      ]
+    }
+  }
 }

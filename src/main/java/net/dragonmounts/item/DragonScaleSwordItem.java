@@ -5,7 +5,6 @@ import net.dragonmounts.api.DragonTypified;
 import net.dragonmounts.init.DMDataComponents;
 import net.dragonmounts.registry.DragonType;
 import net.minecraft.world.item.SwordItem;
-import org.jetbrains.annotations.NotNull;
 
 import static net.dragonmounts.DragonMounts.ITEM_TRANSLATION_KEY_PREFIX;
 
@@ -19,7 +18,7 @@ public class DragonScaleSwordItem extends SwordItem implements DragonTypified {
     }
 
     @Override
-    public @NotNull String getDescriptionId() {
+    public String getDescriptionId() {
         return TRANSLATION_KEY;
     }
 

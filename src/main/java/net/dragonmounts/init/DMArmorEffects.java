@@ -52,6 +52,7 @@ public class DMArmorEffects {
 
     public static final IDragonScaleArmorEffect ENCHANT = new IDragonScaleArmorEffect() {
         private static final TranslatableContents TOOLTIP = new TranslatableContents("tooltip.armor_effect.dragonmounts.enchant", null, TranslatableContents.NO_ARGS);
+
         @Override
         public boolean activate(IArmorEffectManager manager, Player player, int level) {
             Level world = player.level();
@@ -161,6 +162,7 @@ public class DMArmorEffects {
 
     public static final IDragonScaleArmorEffect MOONLIGHT = new IDragonScaleArmorEffect() {
         private static final TranslatableContents TOOLTIP = new TranslatableContents("tooltip.armor_effect.dragonmounts.moonlight", null, TranslatableContents.NO_ARGS);
+
         @Override
         public boolean activate(IArmorEffectManager manager, Player player, int level) {
             boolean flag = level > 3;
@@ -206,6 +208,7 @@ public class DMArmorEffects {
     };
     public static final IDragonScaleArmorEffect TERRA = new IDragonScaleArmorEffect() {
         private static final TranslatableContents TOOLTIP = new TranslatableContents("tooltip.armor_effect.dragonmounts.terra", null, TranslatableContents.NO_ARGS);
+
         @Override
         public boolean activate(IArmorEffectManager manager, Player player, int level) {
             boolean flag = level > 3;

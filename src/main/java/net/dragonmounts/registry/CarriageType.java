@@ -24,6 +24,7 @@ public abstract class CarriageType {
         public @NotNull CarriageType decode(ByteBuf buffer) {
             return REGISTRY.byId(VarInt.read(buffer));
         }
+
         @Override
         public void encode(ByteBuf buffer, CarriageType type) {
             VarInt.write(buffer, REGISTRY.getId(type));

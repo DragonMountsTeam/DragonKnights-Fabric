@@ -11,7 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class DragonScaleArmorItem extends ArmorItem implements DragonTypified, I
     }
 
     @Override
-    public @NotNull String getDescriptionId() {
+    public String getDescriptionId() {
         return TRANSLATION_KEYS[this.type.ordinal()];
     }
 

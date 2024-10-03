@@ -74,15 +74,16 @@ public class DragonCoreBlockEntity extends RandomizableContainerBlockEntity impl
             case 2:
                 this.progress = 1.0F;
                 return;
-            case 3: if ((this.progress -= 0.1F) <= 0.1F) {
-                this.progress = 0.0F;
-                this.stage = AnimationStatus.CLOSED;
-                updateNeighborStates(level, pos, state, 3);
-                level.levelEvent(2003, pos.above(), 0);
-                level.destroyBlock(pos, true);
-            } else if (this.progressOld == 1.0F) {
-                updateNeighborStates(level, pos, state, 3);
-            }
+            case 3:
+                if ((this.progress -= 0.1F) <= 0.1F) {
+                    this.progress = 0.0F;
+                    this.stage = AnimationStatus.CLOSED;
+                    updateNeighborStates(level, pos, state, 3);
+                    level.levelEvent(2003, pos.above(), 0);
+                    level.destroyBlock(pos, true);
+                } else if (this.progressOld == 1.0F) {
+                    updateNeighborStates(level, pos, state, 3);
+                }
         }
     }
 
@@ -125,7 +126,8 @@ public class DragonCoreBlockEntity extends RandomizableContainerBlockEntity impl
             case 1:
                 this.stage = AnimationStatus.OPENING;
                 return true;
-            default: return true;
+            default:
+                return true;
         }
         return super.triggerEvent(id, data);
     }

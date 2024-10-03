@@ -6,7 +6,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.Item;
-import org.jetbrains.annotations.NotNull;
 
 import static net.dragonmounts.DragonMounts.makeId;
 
@@ -23,7 +22,7 @@ public record FeedDragonPayload(int id, int age, DragonLifeStage stage, Item foo
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

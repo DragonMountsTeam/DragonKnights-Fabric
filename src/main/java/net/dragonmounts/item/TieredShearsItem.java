@@ -4,6 +4,7 @@ import net.dragonmounts.entity.dragon.TameableDragonEntity;
 import net.dragonmounts.util.ShearsDispenseItemBehaviorEx;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -14,7 +15,6 @@ import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 import static net.dragonmounts.util.EntityUtil.getSlotForHand;
 
@@ -35,19 +35,24 @@ public class TieredShearsItem extends ShearsItem {
     }
 
     @Override
-    public @NotNull InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
-        var level = entity.level();
-        if (level.isClientSide) return super.interactLivingEntity(stack, player, entity, hand);
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
         if (entity instanceof TameableDragonEntity dragon) {
-            var pos = dragon.blockPosition();
-            if (dragon.isOwnedBy(player)) {
-                if (dragon.readyForShearing(level, stack) && dragon.shear(level, player, stack, pos, SoundSource.PLAYERS)) {
-                    stack.hurtAndBreak(20, dragon, getSlotForHand(hand));
+            if (player instanceof ServerPlayer $player) {
+                var level = entity.level();
+                if (dragon.isOwnedBy($player) && dragon.readyForShearing(level, stack) && dragon.shear(level, $player, stack, dragon.blockPosition(), SoundSource.PLAYERS)) {
+                    stack.hurtAndBreak(
+                            20,
+                            $player.serverLevel(),
+                            $player,
+                            item -> $player.onEquippedItemBroken(item, getSlotForHand(hand))
+                    );
                     return InteractionResult.SUCCESS;
                 }
-            } else {
-                player.displayClientMessage(Component.translatable("message.dragonmounts.not_owner"), true);
+                return InteractionResult.FAIL;
+            } else if (dragon.isOwnedBy(player)) {
+                return InteractionResult.CONSUME;
             }
+            player.displayClientMessage(Component.translatable("message.dragonmounts.not_owner"), true);
             return InteractionResult.FAIL;
         }
         return super.interactLivingEntity(stack, player, entity, hand);

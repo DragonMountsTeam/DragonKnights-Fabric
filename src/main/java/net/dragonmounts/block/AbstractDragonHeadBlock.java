@@ -35,6 +35,7 @@ public abstract class AbstractDragonHeadBlock extends BaseEntityBlock implements
     protected static <T extends AbstractDragonHeadBlock> MapCodec<T> makeCodec(BiFunction<DragonVariant, Properties, T> factory) {
         return RecordCodecBuilder.mapCodec((instance) -> instance.group(DragonVariant.CODEC.fieldOf("variant").forGetter(AbstractDragonHeadBlock::getVariant), propertiesCodec()).apply(instance, factory));
     }
+
     public static final String TRANSLATION_KEY = BLOCK_TRANSLATION_KEY_PREFIX + "dragon_head";
     public final DragonVariant variant;
     public final boolean isOnWall;

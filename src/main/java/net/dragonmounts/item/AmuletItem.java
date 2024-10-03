@@ -32,7 +32,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -81,7 +80,7 @@ public class AmuletItem<T extends Entity> extends Item implements IEntityContain
     }
 
     @Override
-    public @NotNull ItemStack saveEntity(T entity, DataComponentPatch patch) {
+    public ItemStack saveEntity(T entity, DataComponentPatch patch) {
         var type = entity.getType();
         if (type.canSerialize()) {
             var stack = new ItemStack(this);
@@ -94,7 +93,7 @@ public class AmuletItem<T extends Entity> extends Item implements IEntityContain
     }
 
     @Override
-    public @NotNull InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
         if (!(target instanceof TameableDragonEntity dragon)) return InteractionResult.PASS;
         if (!(dragon.level() instanceof ServerLevel world)) return InteractionResult.SUCCESS;
         if (dragon.isOwnedBy(player)) {
@@ -120,7 +119,7 @@ public class AmuletItem<T extends Entity> extends Item implements IEntityContain
     }
 
     @Override
-    public @NotNull InteractionResult useOn(UseOnContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         var stack = context.getItemInHand();
         if (this.isEmpty(stack)) return InteractionResult.PASS;
         if (context.getLevel() instanceof ServerLevel level) {
@@ -151,7 +150,7 @@ public class AmuletItem<T extends Entity> extends Item implements IEntityContain
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
         if (this.isEmpty(stack)) return pass(stack);
         var hit = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
@@ -171,7 +170,7 @@ public class AmuletItem<T extends Entity> extends Item implements IEntityContain
     }
 
     @Override
-    public @NotNull String getDescriptionId() {
+    public String getDescriptionId() {
         return TRANSLATION_KEY;
     }
 

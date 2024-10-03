@@ -8,7 +8,6 @@ import net.dragonmounts.registry.DragonVariant;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.StandingAndWallBlockItem;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.NotNull;
 
 public class DragonHeadItem extends StandingAndWallBlockItem implements DragonTypified {
     public final DragonVariant variant;
@@ -19,7 +18,7 @@ public class DragonHeadItem extends StandingAndWallBlockItem implements DragonTy
     }
 
     @Override
-    public @NotNull String getDescriptionId() {
+    public String getDescriptionId() {
         return AbstractDragonHeadBlock.TRANSLATION_KEY;
     }
 

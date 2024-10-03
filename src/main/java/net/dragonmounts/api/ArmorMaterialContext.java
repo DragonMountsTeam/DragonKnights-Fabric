@@ -18,7 +18,7 @@ public class ArmorMaterialContext {
     public ArmorMaterialContext(int durabilityFactor) {
         this.setDurabilityFactor(durabilityFactor).setDefense(ArmorItem.Type.BODY, 11);
     }
-    
+
     public ArmorMaterialContext setDurabilityFactor(int durabilityFactor) {
         this.durabilityFactor = durabilityFactor;
         return this;

@@ -17,7 +17,9 @@
     "ChatScreenMixin",
     "ClientPacketListenerMixin",
     "CustomHeadLayerMixin",
-    "GuiGraphicsMixin"
+    "GuiGraphicsMixin",
+    "KeyboardHandlerMixin",
+    "MouseHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

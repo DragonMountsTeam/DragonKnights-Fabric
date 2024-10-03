@@ -64,6 +64,7 @@ public class DragonType implements TooltipProvider {
         public @NotNull DragonType decode(ByteBuf buffer) {
             return REGISTRY.byId(VarInt.read(buffer));
         }
+
         @Override
         public void encode(ByteBuf buffer, DragonType type) {
             VarInt.write(buffer, REGISTRY.getId(type));

@@ -28,6 +28,7 @@ import static net.minecraft.client.renderer.entity.LivingEntityRenderer.isEntity
  */
 public class TameableDragonRenderer extends EntityRenderer<ClientDragonEntity> {
     private static final float EYE_BED_OFFSET = 0.1F;
+
     public TameableDragonRenderer(EntityRendererProvider.Context context) {
         super(context);
         this.shadowRadius = 0;

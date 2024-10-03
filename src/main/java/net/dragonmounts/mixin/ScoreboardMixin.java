@@ -81,7 +81,7 @@ public abstract class ScoreboardMixin implements ScoreboardAccessor {
     }
 
     @Inject(method = "entityRemoved", at = @At("HEAD"), cancellable = true)
-    public void sendInitPacket(Entity entity, CallbackInfo info) {
+    public void reserveEntity(Entity entity, CallbackInfo info) {
         int index = this.dragonmounts$reserved.indexOf(entity);
         if (index == -1) return;
         this.dragonmounts$reserved.remove(index);

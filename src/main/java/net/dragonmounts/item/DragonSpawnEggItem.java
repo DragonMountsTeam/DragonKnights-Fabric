@@ -38,7 +38,6 @@ import net.minecraft.world.level.block.entity.TrialSpawnerBlockEntity;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -77,7 +76,7 @@ public class DragonSpawnEggItem extends SpawnEggItem implements IEntityContainer
     }
 
     @Override
-    public @NotNull InteractionResult useOn(UseOnContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         if (!(context.getLevel() instanceof ServerLevel level)) return InteractionResult.SUCCESS;
         var stack = context.getItemInHand();
         var pos = context.getClickedPos();
@@ -129,7 +128,7 @@ public class DragonSpawnEggItem extends SpawnEggItem implements IEntityContainer
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
         var hit = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
         if (hit.getType() != BlockHitResult.Type.BLOCK) return pass(stack);
@@ -152,7 +151,7 @@ public class DragonSpawnEggItem extends SpawnEggItem implements IEntityContainer
     }
 
     @Override
-    public @NotNull Optional<Mob> spawnOffspringFromSpawnEgg(Player player, Mob mob, EntityType<? extends Mob> type, ServerLevel level, Vec3 pos, ItemStack stack) {
+    public Optional<Mob> spawnOffspringFromSpawnEgg(Player player, Mob mob, EntityType<? extends Mob> type, ServerLevel level, Vec3 pos, ItemStack stack) {
         if (!this.spawnsEntity(stack, type)) {
             return Optional.empty();
         }
@@ -171,11 +170,11 @@ public class DragonSpawnEggItem extends SpawnEggItem implements IEntityContainer
     }
 
     @Override
-    public @NotNull String getDescriptionId() {
+    public String getDescriptionId() {
         return TRANSLATION_KEY;
     }
 
-    public @NotNull Component getName(ItemStack stack) {
+    public Component getName(ItemStack stack) {
         return MutableComponent.create(this.name);
     }
 
@@ -184,12 +183,12 @@ public class DragonSpawnEggItem extends SpawnEggItem implements IEntityContainer
         return this.type;
     }
 
-    public @NotNull ItemStack saveEntity(TameableDragonEntity dragon) {
+    public ItemStack saveEntity(TameableDragonEntity dragon) {
         return IEntityContainer.saveEntityData(this, saveWithId(dragon, new CompoundTag()), DataComponentPatch.EMPTY);
     }
 
     @Override
-    public @NotNull ItemStack saveEntity(Entity entity, DataComponentPatch patch) {
+    public ItemStack saveEntity(Entity entity, DataComponentPatch patch) {
         if (entity instanceof TameableDragonEntity) {
             return IEntityContainer.saveEntityData(this, saveWithId(entity, new CompoundTag()), patch);
         }

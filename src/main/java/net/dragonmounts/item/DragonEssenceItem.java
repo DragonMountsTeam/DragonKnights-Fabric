@@ -30,7 +30,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -53,7 +52,7 @@ public class DragonEssenceItem extends Item implements DragonTypified, IEntityCo
     }
 
     @Override
-    public @NotNull InteractionResult useOn(UseOnContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         if (context.getLevel() instanceof ServerLevel level) {
             var stack = context.getItemInHand();
             var pos = context.getClickedPos();
@@ -78,7 +77,7 @@ public class DragonEssenceItem extends Item implements DragonTypified, IEntityCo
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
         var hit = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
         if (hit.getType() != BlockHitResult.Type.BLOCK) return pass(stack);
@@ -101,7 +100,7 @@ public class DragonEssenceItem extends Item implements DragonTypified, IEntityCo
     }
 
     @Override
-    public @NotNull String getDescriptionId() {
+    public String getDescriptionId() {
         return TRANSLATION_KEY;
     }
 
@@ -111,7 +110,7 @@ public class DragonEssenceItem extends Item implements DragonTypified, IEntityCo
     }
 
     @Override
-    public @NotNull ItemStack saveEntity(TameableDragonEntity entity, DataComponentPatch patch) {
+    public ItemStack saveEntity(TameableDragonEntity entity, DataComponentPatch patch) {
         var stack = new ItemStack(this);
         var tag = saveWithId(entity, new CompoundTag());
         tag.remove(FLYING_DATA_PARAMETER_KEY);

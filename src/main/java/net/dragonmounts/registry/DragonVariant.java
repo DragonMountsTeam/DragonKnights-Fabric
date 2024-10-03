@@ -39,6 +39,7 @@ public class DragonVariant implements DragonTypified {
         public @NotNull DragonVariant decode(ByteBuf buffer) {
             return REGISTRY.byId(VarInt.read(buffer));
         }
+
         @Override
         public void encode(ByteBuf buffer, DragonVariant type) {
             VarInt.write(buffer, REGISTRY.getId(type));
@@ -142,8 +143,10 @@ public class DragonVariant implements DragonTypified {
 
         public DragonVariant draw(RandomSource random, @Nullable DragonVariant current, boolean acceptSelf) {
             switch (this.size) {
-                case 0: return current;
-                case 1: return this.variants[0];
+                case 0:
+                    return current;
+                case 1:
+                    return this.variants[0];
             }
             if (acceptSelf || current == null || current.type != this.type) {
                 return this.variants[random.nextInt(this.size)];

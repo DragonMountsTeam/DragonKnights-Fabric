@@ -125,9 +125,12 @@ public class DragonInventory implements Container, StackedContentsCompatible {
     public @NotNull ItemStack removeItem(int index, int count) {
         if (count <= 0) return ItemStack.EMPTY;
         switch (index) {
-            case SLOT_ARMOR_INDEX: return this.armor.get().split(count);
-            case SLOT_CHEST_INDEX: return this.chest.get().split(count);
-            case SLOT_SADDLE_INDEX: return this.saddle.get().split(count);
+            case SLOT_ARMOR_INDEX:
+                return this.armor.get().split(count);
+            case SLOT_CHEST_INDEX:
+                return this.chest.get().split(count);
+            case SLOT_SADDLE_INDEX:
+                return this.saddle.get().split(count);
             default:
                 var stack = ItemStackArrays.removeItem(this.stacks, index, count);
                 if (!stack.isEmpty()) {
@@ -156,7 +159,8 @@ public class DragonInventory implements Container, StackedContentsCompatible {
                 if (stack.isEmpty()) return ItemStack.EMPTY;
                 this.saddle.set(ItemStack.EMPTY);
                 return stack;
-            default: return ItemStackArrays.takeItem(this.stacks, index);
+            default:
+                return ItemStackArrays.takeItem(this.stacks, index);
         }
     }
 
@@ -172,11 +176,12 @@ public class DragonInventory implements Container, StackedContentsCompatible {
             case SLOT_SADDLE_INDEX:
                 this.saddle.set(stack);
                 return;
-            default: if (index >= 0 && index < this.stacks.length) {
-                stack.limitSize(this.getMaxStackSize(stack));
-                this.stacks[index] = stack;
-                this.setChanged();
-            }
+            default:
+                if (index >= 0 && index < this.stacks.length) {
+                    stack.limitSize(this.getMaxStackSize(stack));
+                    this.stacks[index] = stack;
+                    this.setChanged();
+                }
         }
     }
 

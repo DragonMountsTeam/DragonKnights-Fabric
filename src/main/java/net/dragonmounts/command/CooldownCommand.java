@@ -17,13 +17,14 @@ public class CooldownCommand {
     public static ArgumentBuilder<CommandSourceStack, ?> register(Predicate<CommandSourceStack> permission) {
         var single = Commands.argument("player", EntityArgument.player());
         var multiple = Commands.argument("players", EntityArgument.players());
+        var intArg = IntegerArgumentType.integer(0);
         for (var category : CooldownCategory.REGISTRY) {
             var identifier = category.identifier.toString();
             single.then(Commands.literal(identifier).executes(context -> get(context.getSource(), EntityArgument.getPlayer(context, "player"), category))
-                    .then(Commands.argument("value", IntegerArgumentType.integer(0)).executes(context -> set(context.getSource(), EntityArgument.getPlayer(context, "player"), category, IntegerArgumentType.getInteger(context, "value"))))
+                    .then(Commands.argument("value", intArg).executes(context -> set(context.getSource(), EntityArgument.getPlayer(context, "player"), category, IntegerArgumentType.getInteger(context, "value"))))
             );
             multiple.then(Commands.literal(identifier).executes(context -> get(context.getSource(), EntityArgument.getPlayers(context, "players"), category))
-                    .then(Commands.argument("value", IntegerArgumentType.integer(0)).executes(context -> set(context.getSource(), EntityArgument.getPlayers(context, "players"), category, IntegerArgumentType.getInteger(context, "value"))))
+                    .then(Commands.argument("value", intArg).executes(context -> set(context.getSource(), EntityArgument.getPlayers(context, "players"), category, IntegerArgumentType.getInteger(context, "value"))))
             );
         }
         return Commands.literal("cooldown").requires(permission).then(single).then(multiple);

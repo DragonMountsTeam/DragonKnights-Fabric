@@ -2,6 +2,7 @@ package net.dragonmounts.client;
 
 import net.dragonmounts.client.gui.DragonCoreScreen;
 import net.dragonmounts.client.gui.DragonInventoryScreen;
+import net.dragonmounts.client.gui.FluteOverlay;
 import net.dragonmounts.client.model.dragon.DragonModelProvider;
 import net.dragonmounts.client.renderer.DragonEggRenderer;
 import net.dragonmounts.client.renderer.block.DragonCoreRenderer;
@@ -12,6 +13,7 @@ import net.dragonmounts.client.variant.VariantAppearances;
 import net.dragonmounts.init.*;
 import net.dragonmounts.item.DragonScaleBowItem;
 import net.dragonmounts.item.DragonScaleShieldItem;
+import net.dragonmounts.item.FluteItem;
 import net.dragonmounts.network.ClientHandler;
 import net.dragonmounts.registry.DragonType;
 import net.fabricmc.api.ClientModInitializer;
@@ -41,6 +43,7 @@ public class DragonMountsClient implements ClientModInitializer {
         var pull = ResourceLocation.withDefaultNamespace("pull");
         var pulling = ResourceLocation.withDefaultNamespace("pulling");
         var blocking = ResourceLocation.withDefaultNamespace("blocking");
+        var playing = ResourceLocation.withDefaultNamespace("playing");
         ClampedItemPropertyFunction duration = (stack, $, entity, i) -> entity == null ? 0.0F : entity.getUseItem() != stack ? 0.0F : (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / 20.0F;
         ClampedItemPropertyFunction isUsingItem = (stack, $, entity, i) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F;
         for (var type : DragonType.REGISTRY) {
@@ -54,6 +57,7 @@ public class DragonMountsClient implements ClientModInitializer {
                 ItemProperties.register(shield, blocking, isUsingItem);
             }
         }
+        ItemProperties.register(DMItems.FLUTE, playing, isUsingItem);
         DMItems.forEachSpawnEgg(egg -> ColorProviderRegistry.ITEM.register(($, index) -> egg.getColor(index), egg));
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(DMItems::attachSpawnEggs);
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(entries ->
@@ -70,6 +74,7 @@ public class DragonMountsClient implements ClientModInitializer {
         registerEntityRenderer(DMEntities.TAMEABLE_DRAGON, TameableDragonRenderer::new);
         ClientHandler.init();
         DMKeyMappings.register();
+        FluteItem.HANDLER = FluteOverlay.INSTANCE;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked", "SameParameterValue"})
