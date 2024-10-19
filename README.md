@@ -1,8 +1,8 @@
-Dragon Mounts 4 [![Discord](https://img.shields.io/discord/934116457149784124?label=Discord)](https://discord.gg/Ewm8aTTJ3K) [![Curse Forge](http://cf.way2muchnoise.eu/full_581402_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/dragon-mounts-3)
+Dragon Mounts 4: Reignite The Flames [![Discord](https://img.shields.io/discord/934116457149784124?label=Discord)](https://discord.gg/Ewm8aTTJ3K) [![Curse Forge](http://cf.way2muchnoise.eu/full_581402_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/dragon-mounts-3)
 ===============
 ![LOGO](src/main/resources/logo.png)
 
-This is the git of the Dragon Mounts 4 mod for Fabric.
+A Minecraft mod that allows you to breed dragon eggs and foster them to ridable dragons.
 
 ## License
 The mods binaries, as well as its textures and code are licensed under a custom license.
@@ -17,8 +17,8 @@ For anyone else, we only support official builds from Curse/Curseforge, Modrinth
 
 Following channels could be used for feedback and suggestions.
 
-- Discord: [Dragon Mounts 4 - Official](https://discord.gg/Ewm8aTTJ3K)
-- Curse Forge: [Dragon Mounts 3](https://www.curseforge.com/minecraft/mc-mods/dragon-mounts-3)
+- Discord: [Dragon Mounts 4: Reignite The Flames](https://discord.gg/Ewm8aTTJ3K)
+- CurseForge: [Dragon Mounts 3](https://www.curseforge.com/minecraft/mc-mods/dragon-mounts-3)
 - BiliBili: [Lintha暮辰](https://space.bilibili.com/319265256)
 - QQ Groups:
     - 1142349064: [DM3玩家QQ社区群 - 1群](https://qm.qq.com/q/K4vQcBBgIK)
