@@ -17,7 +17,7 @@ For anyone else, we only support official builds from Curse/Curseforge, Modrinth
 
 Following channels could be used for feedback and suggestions.
 
-- Discord: [Dragon Mounts 4: Reignite The Flames](https://discord.gg/Ewm8aTTJ3K)
+- Discord: [Dragon Mounts 4](https://discord.gg/Ewm8aTTJ3K)
 - CurseForge: [Dragon Mounts 3](https://www.curseforge.com/minecraft/mc-mods/dragon-mounts-3)
 - BiliBili: [Lintha暮辰](https://space.bilibili.com/319265256)
 - QQ Groups:
