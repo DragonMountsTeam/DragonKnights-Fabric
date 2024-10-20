@@ -13,7 +13,7 @@ Any modpack which uses Dragon Mounts takes full responsibility for user support 
 
 For anyone else, we only support official builds from Curse/Curseforge, Modrinth, and GitHub, not custom built jars. We also do not take bug reports for outdated builds of Minecraft.
 
-## Contact
+## Contact Us
 
 Following channels could be used for feedback and suggestions.
 
