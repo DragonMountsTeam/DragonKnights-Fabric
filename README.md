@@ -5,7 +5,7 @@ Dragon Mounts 4: Reignite The Flames [![Discord](https://img.shields.io/discord/
 A Minecraft mod that allows you to breed dragon eggs and foster them to ridable dragons.
 
 ## License
-The mods binaries, as well as its textures and code are licensed under GPL-3.0 license.
+The mods binaries, as well as its textures and code are licensed under the GPL-3.0 license.
 
 Feel free to use the mod in any modpacks. You are allowed to use it, you do not need to ask for permission, in fact permission requests will usually be ignored. When using the mod, please use the Curse/Curseforge, Modrinth, or GitHub download and do not rehost the files.
 
