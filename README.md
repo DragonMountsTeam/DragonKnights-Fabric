@@ -1,4 +1,4 @@
-Dragon Knights: Reignite The Flames [![Discord](https://img.shields.io/discord/934116457149784124?label=Discord)](https://discord.gg/Ewm8aTTJ3K) [![Curse Forge](http://cf.way2muchnoise.eu/full_581402_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/dragon-mounts-3)
+Dragon Knights [![Discord](https://img.shields.io/discord/934116457149784124?label=Discord)](https://discord.gg/Ewm8aTTJ3K) [![Curse Forge](http://cf.way2muchnoise.eu/full_581402_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/dragon-mounts-3)
 ===============
 ![LOGO](src/main/resources/logo.png)
 
