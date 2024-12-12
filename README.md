@@ -14,15 +14,7 @@ Any modpack which uses Dragon Mounts takes full responsibility for user support 
 For anyone else, we only support official builds from Curse/Curseforge, Modrinth, and GitHub, not custom built jars. We also do not take bug reports for outdated builds of Minecraft.
 
 ## Contact Us
-
 Following channels could be used for feedback and suggestions.
 
-- Discord: [Dragon Mounts 4](https://discord.gg/Ewm8aTTJ3K)
-- CurseForge: [Dragon Mounts 3](https://www.curseforge.com/minecraft/mc-mods/dragon-mounts-3)
-- BiliBili: [Lintha暮辰](https://space.bilibili.com/319265256)
-- QQ Groups:
-    - 1142349064: [DM3玩家QQ社区群 - 1群](https://qm.qq.com/q/K4vQcBBgIK)
-    - 762040407: [DM3玩家QQ社区群 - 2群](https://qm.qq.com/q/28O2eflUDS)
-    - ~~675072475: [DM3玩家QQ社区群 - 3群](https://qm.qq.com/q/sVmhZQMfDO)~~
-
-If you world like to make contributions, please contact and join us!
+- Discord: [Dragon Mounts](https://discord.gg/Ewm8aTTJ3K)
+- YouTube: [Dragon Mounts](https://youtube.com/@dragonmounts?si=QrA8DMUHJG5m8drf)
